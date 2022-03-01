@@ -9,7 +9,15 @@ type MySQLDBHandler struct {
 }
 
 func (handler *MySQLDBHandler) FindUserByName(req *FindUserByNameRequest) *FindUserByNameResult {
+	user := &User{}
+	handler.MySQLInst.Debug().Where(&User{UserName: req.UserName}).Find(&user)
 
+	res := &FindUserByNameResult{UserInfo: &Info{
+		UserName: user.UserName,
+		PassWord: user.PassWord,
+	}}
+
+	return res
 }
 
 
