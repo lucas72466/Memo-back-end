@@ -20,4 +20,7 @@ type FindUserByNameResult struct {
 }
 
 type CreateUser struct {
+	UserName string
+	PassWord string
+	ID       int64
 }
