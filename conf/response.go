@@ -9,6 +9,7 @@ var (
 	WrongPassword     ResponseCode = 400
 	loginSuccess      ResponseCode = 500
 	UserNameNotFound  ResponseCode = 600
+	InternalError     ResponseCode = 700
 )
 
 var ErrMsg = map[ResponseCode]string{
@@ -18,4 +19,5 @@ var ErrMsg = map[ResponseCode]string{
 	WrongPassword:     "The password is wrong",
 	loginSuccess:      "Login successfully",
 	UserNameNotFound:  "Username doesn't exist",
+	InternalError:     "Internal error",
 }
