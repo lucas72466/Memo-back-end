@@ -1,14 +1,15 @@
 package public
 
 import (
+	"Memo/conf"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 )
 
 type DefaultResponse struct {
-	ErrCode int         `json:"error_code"`
-	ErrMsg  string      `json:"err_msg"`
-	Data    interface{} `json:"data"`
+	ErrCode conf.ResponseCode `json:"error_code"`
+	ErrMsg  string            `json:"err_msg"`
+	Data    interface{}       `json:"data"`
 }
 
 // TODO 加入日志和链路相关逻辑，本次实现最简单版本
