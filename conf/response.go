@@ -7,7 +7,7 @@ var (
 	DuplicateUserName ResponseCode = 200
 	InvalidParam      ResponseCode = 300
 	WrongPassword     ResponseCode = 400
-	loginSuccess      ResponseCode = 500
+	LoginSuccess      ResponseCode = 500
 	UserNameNotFound  ResponseCode = 600
 	InternalError     ResponseCode = 700
 )
@@ -17,7 +17,7 @@ var ErrMsg = map[ResponseCode]string{
 	DuplicateUserName: "The username has been used",
 	InvalidParam:      "Username or Password is invalid",
 	WrongPassword:     "The password is wrong",
-	loginSuccess:      "Login successfully",
+	LoginSuccess:      "Login successfully",
 	UserNameNotFound:  "Username doesn't exist",
 	InternalError:     "Internal error",
 }
