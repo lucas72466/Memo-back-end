@@ -6,8 +6,11 @@ type User struct {
 	ID         int64  `json:"id"`
 	UserName   string `json:"user_name"`
 	PassWord   string `json:"pass_word"`
-	Salt       string `json:"salt"`
-	CreateTime int64  `json:"create_time"`
-	UpdateTime int64  `json:"update_time"`
+	CreateTime int64  `json:"create_time"  gorm:"autoCreateTime"`
+	UpdateTime int64  `json:"update_time"  gorm:"autoUpdateTime:milli"`
 	IsDelete   string `json:"is_delete"`
+}
+
+func (user *User) TableName() string {
+	return "users"
 }

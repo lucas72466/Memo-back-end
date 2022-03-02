@@ -4,6 +4,7 @@ package user
 
 type DBHandler interface {
 	FindUserByName(req *FindUserByNameRequest) *FindUserByNameResult
+	CreateUser(req *CreateUserRequest) error
 }
 
 type Info struct {
@@ -19,5 +20,8 @@ type FindUserByNameResult struct {
 	UserInfo *Info
 }
 
-type CreateUser struct {
+type CreateUserRequest struct {
+	UserName string
+	PassWord string
+	ID       int64
 }
