@@ -3,7 +3,7 @@ package user
 // 接口
 
 type DBHandler interface {
-	FindUserByName(req *FindUserByNameRequest) *FindUserByNameResult
+	FindUserByName(req *FindUserByNameRequest) (*FindUserByNameResult, error)
 	CreateUser(req *CreateUserRequest) error
 }
 
@@ -21,7 +21,5 @@ type FindUserByNameResult struct {
 }
 
 type CreateUserRequest struct {
-	UserName string
-	PassWord string
-	ID       int64
+	UserInfo *Info
 }
