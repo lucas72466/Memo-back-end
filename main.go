@@ -1,9 +1,11 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"Memo/router"
+)
 
 func main() {
-	r := gin.Default()
+	r := router.InitRouter()
 
 	r.Run()
 }

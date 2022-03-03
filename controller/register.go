@@ -12,15 +12,12 @@ import (
 type UserRegisterHandler struct {
 }
 
-//TODO:路由登陆
-
 func UserRegisterRouteRegister(group *gin.RouterGroup) {
-	userRegister := &UserLoginHandler{}
-	group.POST("/login", UserLoginHandler{}.UserLogin)
+	handler := UserRegisterHandler{}
+	group.POST("/register", handler.UserRegister)
 }
 
 func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
-
 	// 1. 绑定参数 + 参数校验
 
 	param := &dto.UserRegisterInput{}

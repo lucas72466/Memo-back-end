@@ -14,8 +14,8 @@ type UserLoginHandler struct{}
 //路由登陆
 
 func UserLoginRouteRegister(group *gin.RouterGroup) {
-	userLogin := &UserLoginHandler{}
-	group.POST("/login", UserLoginHandler{}.UserLogin)
+	handler := UserLoginHandler{}
+	group.POST("/login", handler.UserLogin)
 }
 func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 
