@@ -5,8 +5,8 @@ import (
 	"Memo/dao/user"
 	"Memo/dto"
 	"Memo/public"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type UserLoginHandler struct{}
@@ -46,20 +46,24 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 
 	//3. 用户铭文的password用同样的方式加密，比对
 	//4.如果密码错误，返回状态和文本；如果密码正确，返回状态文本和token
-	if bool, err := public.ComparePasswords(res.UserInfo.PassWord, param.Password); bool == false {
+	if match, err := public.ComparePasswords(param.Password, res.UserInfo.PassWord); !match {
 		public.ResponseError(c, &public.DefaultResponse{
 			ErrCode: conf.WrongPassword,
 			ErrMsg:  conf.ErrMsg[conf.WrongPassword],
-			Data:    nil,
+			Data:    err,
 		}, err)
 		return
 	}
 
 	//密码正确
-	tokenString, _ := public.GenerateUserToken(&public.UserTokenClaims{
-		UserName:       param.UserName,
-		StandardClaims: jwt.StandardClaims{},
+	tokenString, err := public.GenerateUserToken(&public.UserTokenClaims{
+		UserName: param.UserName,
 	})
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	public.ResponseSuccess(c, &public.DefaultResponse{
 		ErrCode: conf.LoginSuccess,
