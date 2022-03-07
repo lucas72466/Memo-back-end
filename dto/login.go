@@ -25,22 +25,3 @@ type UserLoginOutput struct {
 	Note   string `json:"note"`
 	Token  string `json:"token"`
 }
-
-// 定义登陆状态，是否成功并返回字段
-type LoginStatus int
-
-var (
-	Success          LoginStatus = 100
-	UserNameNotFound LoginStatus = 200
-	InvalidUserName  LoginStatus = 300
-	WrongPassword    LoginStatus = 400
-	InvalidPassword  LoginStatus = 500
-)
-
-var LoginNote = map[LoginStatus]string{
-	Success:          "Login success",
-	UserNameNotFound: "Username doesn't exist",
-	WrongPassword:    "The password is wrong",
-	InvalidUserName:  "Username is invalid",
-	InvalidPassword:  "Password is invalid",
-}

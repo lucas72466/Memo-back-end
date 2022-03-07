@@ -55,7 +55,7 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 		UserName: param.UserName,
 		PassWord: hashedPassword,
 	}
-
+	//
 	if err := user.UDBHandler.CreateUser(&user.CreateUserRequest{
 		UserInfo: userInfo,
 	}); err != nil {
