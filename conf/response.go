@@ -12,6 +12,11 @@ var (
 	InternalError     ResponseCode = 700
 )
 
+var (
+	StoryUploadSuccess ResponseCode = 800
+	InvalidTitle       ResponseCode = 900
+)
+
 var ErrMsg = map[ResponseCode]string{
 	RegisterSuccess:   "Register successfully",
 	DuplicateUserName: "The username has been used",
@@ -20,4 +25,7 @@ var ErrMsg = map[ResponseCode]string{
 	LoginSuccess:      "Login successfully",
 	UserNameNotFound:  "Username doesn't exist",
 	InternalError:     "Internal error",
+
+	StoryUploadSuccess: "Story upload successfully",
+	InvalidTitle:       "Title is invalid",
 }
