@@ -8,7 +8,7 @@ import (
 // 定义input结构体
 type UserLoginInput struct {
 	UserName string `json:"user_name" binding:"required,max=15,min=5"`
-	Password string `json:"password" binding:"required,max=20,min=8" `
+	Password string `json:"password" binding:"required,passwordValidate" `
 }
 
 // 绑定参数方法

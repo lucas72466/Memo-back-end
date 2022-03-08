@@ -7,7 +7,7 @@ import (
 
 type UserRegisterInput struct {
 	UserName string `json:"user_name" binding:"required,max=15,min=5"`
-	Password string `json:"password" binding:"required,max=20,min=8"`
+	Password string `json:"password" binding:"required,passwordValidate"`
 }
 
 //从方法绑定参数

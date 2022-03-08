@@ -1,9 +1,14 @@
 package main
 
-import "Memo/router"
+import (
+	"Memo/public"
+	"Memo/router"
+)
 
 func main() {
 	r := router.InitRouter()
+
+	public.InitCustomizeValidateFunc()
 
 	r.Run()
 	//fmt.Println(public.GenerateUserToken("shifeize"))
@@ -11,7 +16,7 @@ func main() {
 	//r := gin.Default()
 	//r.Use(middleware.JWTAuth())
 	//r.POST("/test", func(context *gin.Context) {
-	//	info, err := public.GetUserTokenInfoFromContext(context)
+	//	info, err := public.GeCtUserTokenInfoFromContext(context)
 	//	if err != nil {
 	//		panic(err)
 	//	}
