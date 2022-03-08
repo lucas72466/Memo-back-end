@@ -9,7 +9,6 @@ type StoryUploadInput struct {
 	Title         string `json:"title" binding:"required,max=20"`
 	Content       string `json:"content"`
 	PictureLink   string `json:"picture_link"`
-	Author        string `json:"author" binding:"required"`
 	Anonymously   bool   `json:"anonymously"`
 	PublicVisible int    `json:"publish_visible"`
 	BuildingID    int    `json:"building_id" binding:"required"`

@@ -42,13 +42,24 @@ func (handler *StoryUploadHandler) StoryUpload(c *gin.Context) {
 		return
 	}
 
+	// token中获取username
+	info, err := public.GetUserTokenInfoFromContext(c)
+	if err != nil {
+		public.ResponseError(c, &public.DefaultResponse{
+			ErrCode: conf.InternalError,
+			ErrMsg:  conf.ErrMsg[conf.InternalError],
+			Data:    nil,
+		}, err)
+		return
+	}
+
 	// 2.在数据库中生成记录
-	err := memory.MDBHandler.UploadStory(&memory.StoryUploadRequest{
+	err = memory.MDBHandler.UploadStory(&memory.StoryUploadRequest{
 		StoryInfo: &memory.StoryInfo{
 			Title:         param.Title,
 			Content:       param.Content,
 			PictureLink:   param.PictureLink,
-			Author:        param.Author,
+			Author:        info.UserName,
 			Anonymously:   param.Anonymously,
 			PublicVisible: param.PublicVisible,
 			BuildingID:    param.BuildingID,
