@@ -9,5 +9,5 @@ const (
 
 var (
 	usernameRegex = regexp.MustCompile(usernameRegexString)
-	passwordRegex = regexp.MustCompile(passwordRegexString)
+	//passwordRegex = regexp.MustCompile(passwordRegexString)
 )
