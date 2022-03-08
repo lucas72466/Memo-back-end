@@ -11,7 +11,7 @@ func main() {
 	//r := gin.Default()
 	//r.Use(middleware.JWTAuth())
 	//r.POST("/test", func(context *gin.Context) {
-	//	info, err := public.GetUserTokenInfoFromContext(context)
+	//	info, err := public.GeCtUserTokenInfoFromContext(context)
 	//	if err != nil {
 	//		panic(err)
 	//	}
