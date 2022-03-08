@@ -40,7 +40,7 @@ func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 		BuildingID:    param.BuildingID,
 	}
 
-	if err := memory.CDBHandler.CommentUpload(&memory.CommentUploadRequest{
+	if err := memory.MDBHandler.CommentUpload(&memory.CommentUploadRequest{
 		CommentInfo: commentInfo,
 	}); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
@@ -48,7 +48,7 @@ func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 			ErrMsg:  conf.ErrMsg[conf.InternalError],
 			Data:    nil,
 		}, err)
-
+		return
 	}
 
 	// 3. 返回状态码和msg
