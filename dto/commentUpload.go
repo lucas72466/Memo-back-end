@@ -19,7 +19,6 @@ var (
 // 定义comment input结构体
 type CommentUploadInput struct {
 	Content       string `json:"content" binding:"required,max=50,min=1"`
-	Author        string `json:"author" binding:"required"`
 	Anonymously   int    `json:"anonymously"`
 	PublicVisible int    `json:"public_visible"`
 	BuildingID    int64  `json:"building_id" binding:"required"`

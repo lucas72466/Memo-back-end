@@ -33,10 +33,21 @@ func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 		return
 	}
 
+	// token中获取username
+	info, err := public.GetUserTokenInfoFromContext(c)
+	if err != nil {
+		public.ResponseError(c, &public.DefaultResponse{
+			ErrCode: conf.InternalError,
+			ErrMsg:  conf.ErrMsg[conf.InternalError],
+			Data:    nil,
+		}, err)
+		return
+	}
+
 	// 2. 插入数据库
 
 	commentInfo := &memory.CommentInfo{
-		Author:        param.Author,
+		Author:        info.UserName,
 		Content:       param.Content,
 		Anonymously:   param.Anonymously,
 		PublicVisible: param.PublicVisible,
