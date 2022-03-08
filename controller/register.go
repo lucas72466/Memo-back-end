@@ -49,6 +49,7 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 			ErrMsg:  conf.ErrMsg[conf.InternalError],
 			Data:    nil,
 		}, err)
+		return
 	}
 
 	userInfo := &user.Info{
@@ -64,7 +65,7 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 			ErrMsg:  conf.ErrMsg[conf.InternalError],
 			Data:    nil,
 		}, err)
-
+		return
 	}
 
 	// 4. 返回状态码

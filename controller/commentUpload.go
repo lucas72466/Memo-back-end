@@ -6,6 +6,7 @@ import (
 	"Memo/dto"
 	"Memo/public"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type CommentUploadHandler struct{}
@@ -22,6 +23,8 @@ func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 	param := &dto.CommentUploadInput{}
 
 	if err := param.BindParam(c); err != nil {
+		log.Println(err)
+
 		public.ResponseError(c, &public.DefaultResponse{
 			ErrCode: conf.InvalidParam,
 			ErrMsg:  conf.ErrMsg[conf.InvalidParam],
@@ -40,7 +43,7 @@ func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 		BuildingID:    param.BuildingID,
 	}
 
-	if err := memory.CDBHandler.CommentUpload(&memory.CommentUploadRequest{
+	if err := memory.MDBHandler.CommentUpload(&memory.CommentUploadRequest{
 		CommentInfo: commentInfo,
 	}); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
@@ -48,7 +51,7 @@ func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 			ErrMsg:  conf.ErrMsg[conf.InternalError],
 			Data:    nil,
 		}, err)
-
+		return
 	}
 
 	// 3. 返回状态码和msg
