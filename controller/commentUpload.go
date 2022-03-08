@@ -48,7 +48,7 @@ func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 			ErrMsg:  conf.ErrMsg[conf.InternalError],
 			Data:    nil,
 		}, err)
-
+		return
 	}
 
 	// 3. 返回状态码和msg
