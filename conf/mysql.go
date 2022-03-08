@@ -4,7 +4,7 @@ import "fmt"
 
 var (
 	defaultMySQLUserName = "root"
-	defaultMySQLPassword = "Cyt.012846"
+	defaultMySQLPassword = "Sunjn0503"
 	defaultMySQLDBName   = "memo"
 
 	defaultMySQLLocalDSNTemplate = "%s:%s@tcp(127.0.0.1:3306)/%s?charset=utf8mb4&parseTime=True"
