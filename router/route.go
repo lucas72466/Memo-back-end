@@ -14,5 +14,11 @@ func InitRouter() *gin.Engine {
 		controller.UserRegisterRouteRegister(userRouter)
 	}
 
+	memoryRouter := router.Group("/memory")
+	{
+		controller.StoryUploadRouteRegister(memoryRouter)
+		controller.CommentUploadRouteRegister(memoryRouter)
+	}
+
 	return router
 }

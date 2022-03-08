@@ -19,6 +19,16 @@ var (
 )
 
 var ErrMsg = map[ResponseCode]string{
+	RegisterSuccess:   "Register successfully",
+	DuplicateUserName: "The username has been used",
+	InvalidParam:      "Username or Password is invalid",
+	WrongPassword:     "The password is wrong",
+	LoginSuccess:      "Login successfully",
+	UserNameNotFound:  "Username doesn't exist",
+	InternalError:     "Internal error",
+
+	StoryUploadSuccess: "Story upload successfully",
+	InvalidTitle:       "Title is invalid",
 	RegisterSuccess:      "Register successfully",
 	DuplicateUserName:    "The username has been used",
 	InvalidParam:         "Username or Password is invalid",

@@ -18,8 +18,8 @@ func UserRegisterRouteRegister(group *gin.RouterGroup) {
 }
 
 func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
-	// 1. 绑定参数 + 参数校验
 
+	// 1. 绑定参数 + 参数校验
 	param := &dto.UserRegisterInput{}
 
 	if err := param.BindParam(c); err != nil {

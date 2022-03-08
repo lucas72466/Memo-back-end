@@ -7,9 +7,9 @@ import (
 	"log"
 )
 
-// 依赖注入，创建数据库实例
+// TODO 复制粘贴的很乱 要改
 
-var CDBHandler = InitDBHandler()
+var MDBHandler = InitDBHandler()
 
 func InitMySQLInst() *gorm.DB {
 	db, err := gorm.Open(mysql.Open(conf.DefaultLocalMySQLDSN), &gorm.Config{})
