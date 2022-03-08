@@ -1,6 +1,8 @@
 package public
 
-import "regexp"
+import (
+	"regexp"
+)
 
 const (
 	usernameRegexString = "^[0-9A-Za-z]{5,15}$"
