@@ -5,6 +5,7 @@ import (
 	"Memo/dao/memory"
 	"Memo/dto"
 	"Memo/public"
+	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,12 +14,13 @@ type StoryUploadHandler struct {
 
 func StoryUploadRouteRegister(group *gin.RouterGroup) {
 	handler := StoryUploadHandler{}
-	group.POST("/memory", handler.StoryUpload)
+	group.POST("/storyUpload", handler.StoryUpload)
 }
 
 func (handler *StoryUploadHandler) StoryUpload(c *gin.Context) {
 
-	// 1. 绑定校验参数
+	// 1. 绑定
+	// 1.1校验参数
 	param := &dto.StoryUploadInput{}
 
 	if err := param.BindParam(c); err != nil {
@@ -27,6 +29,16 @@ func (handler *StoryUploadHandler) StoryUpload(c *gin.Context) {
 			ErrMsg:  conf.ErrMsg[conf.InvalidParam],
 			Data:    nil,
 		}, err)
+		return
+	}
+
+	// 1.2若content和picture皆空，则返回err
+	if comp := IsEmptyContAndPic(param.Content, param.PictureLink); comp == true {
+		public.ResponseError(c, &public.DefaultResponse{
+			ErrCode: conf.EmptyContentAndPicture,
+			ErrMsg:  conf.ErrMsg[conf.EmptyContentAndPicture],
+			Data:    nil,
+		}, errors.New(""))
 		return
 	}
 
@@ -47,6 +59,7 @@ func (handler *StoryUploadHandler) StoryUpload(c *gin.Context) {
 			ErrMsg:  conf.ErrMsg[conf.InternalError],
 			Data:    nil,
 		}, err)
+		return
 	}
 
 	// 3.返回状态
@@ -56,4 +69,22 @@ func (handler *StoryUploadHandler) StoryUpload(c *gin.Context) {
 		Data:    nil,
 	})
 
+}
+
+// 比较content和picture是否都为空
+
+func IsEmptyContAndPic(content string, picture string) bool {
+	if comp := IsEmpty(content) && IsEmpty(picture); comp == true {
+		return true
+	}
+
+	return false
+}
+
+func IsEmpty(param string) bool {
+	if param == "" {
+		return true
+	}
+
+	return false
 }
