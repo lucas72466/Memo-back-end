@@ -56,9 +56,7 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 	}
 
 	//密码正确
-	tokenString, err := public.GenerateUserToken(&public.UserTokenClaims{
-		UserName: param.UserName,
-	})
+	tokenString, err := public.GenerateUserToken(param.UserName)
 
 	if err != nil {
 		log.Println(err)
