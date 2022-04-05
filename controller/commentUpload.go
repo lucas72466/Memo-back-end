@@ -1,12 +1,7 @@
 package controller
 
 import (
-	"Memo/conf"
-	"Memo/dao/memory"
-	"Memo/dto"
-	"Memo/public"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 type CommentUploadHandler struct{}
@@ -19,56 +14,56 @@ func CommentUploadRouteRegister(group *gin.RouterGroup) {
 }
 func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 
-	//1.绑定校验参数
-	param := &dto.CommentUploadInput{}
-
-	if err := param.BindParam(c); err != nil {
-		log.Println(err)
-
-		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InvalidParam,
-			ErrMsg:  conf.ErrMsg[conf.InvalidParam],
-			Data:    nil,
-		}, err)
-		return
-	}
-
-	// token中获取username
-	info, err := public.GetUserTokenInfoFromContext(c)
-	if err != nil {
-		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InternalError,
-			ErrMsg:  conf.ErrMsg[conf.InternalError],
-			Data:    nil,
-		}, err)
-		return
-	}
-
-	// 2. 插入数据库
-
-	commentInfo := &memory.CommentInfo{
-		Author:        info.UserName,
-		Content:       param.Content,
-		Anonymously:   param.Anonymously,
-		PublicVisible: param.PublicVisible,
-		BuildingID:    param.BuildingID,
-	}
-
-	if err := memory.MDBHandler.CommentUpload(&memory.CommentUploadRequest{
-		CommentInfo: commentInfo,
-	}); err != nil {
-		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InternalError,
-			ErrMsg:  conf.ErrMsg[conf.InternalError],
-			Data:    nil,
-		}, err)
-		return
-	}
-
-	// 3. 返回状态码和msg
-	public.ResponseSuccess(c, &public.DefaultResponse{
-		ErrCode: conf.CommentUploadSuccess,
-		ErrMsg:  conf.ErrMsg[conf.CommentUploadSuccess],
-		Data:    nil,
-	})
+	////1.绑定校验参数
+	//param := &dto.CommentUploadInput{}
+	//
+	//if err := param.BindParam(c); err != nil {
+	//	log.Println(err)
+	//
+	//	public.ResponseError(c, &public.DefaultResponse{
+	//		ErrCode: conf.InvalidParam,
+	//		ErrMsg:  conf.ErrMsg[conf.InvalidParam],
+	//		Data:    nil,
+	//	}, err)
+	//	return
+	//}
+	//
+	//// token中获取username
+	//info, err := public.GetUserTokenInfoFromContext(c)
+	//if err != nil {
+	//	public.ResponseError(c, &public.DefaultResponse{
+	//		ErrCode: conf.InternalError,
+	//		ErrMsg:  conf.ErrMsg[conf.InternalError],
+	//		Data:    nil,
+	//	}, err)
+	//	return
+	//}
+	//
+	//// 2. 插入数据库
+	//
+	//commentInfo := &memory.CommentInfo{
+	//	Author:        info.UserName,
+	//	Content:       param.Content,
+	//	Anonymously:   param.Anonymously,
+	//	PublicVisible: param.PublicVisible,
+	//	BuildingID:    param.BuildingID,
+	//}
+	//
+	//if err := memory.MDBHandler.CommentUpload(&memory.CommentUploadRequest{
+	//	CommentInfo: commentInfo,
+	//}); err != nil {
+	//	public.ResponseError(c, &public.DefaultResponse{
+	//		ErrCode: conf.InternalError,
+	//		ErrMsg:  conf.ErrMsg[conf.InternalError],
+	//		Data:    nil,
+	//	}, err)
+	//	return
+	//}
+	//
+	//// 3. 返回状态码和msg
+	//public.ResponseSuccess(c, &public.DefaultResponse{
+	//	ErrCode: conf.CommentUploadSuccess,
+	//	ErrMsg:  conf.ErrMsg[conf.CommentUploadSuccess],
+	//	Data:    nil,
+	//})
 }

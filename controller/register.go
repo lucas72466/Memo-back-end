@@ -24,9 +24,9 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 
 	if err := param.BindParam(c); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InvalidParam,
-			ErrMsg:  conf.ErrMsg[conf.InvalidParam],
-			Data:    nil,
+			StatusCode: conf.InvalidParam,
+			Msg:        err.Error(),
+			Data:       nil,
 		}, err)
 		return
 	}
@@ -34,9 +34,9 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 	// 2. 查询是否有重复的用户名
 	if exist := duplicateUser(param.UserName); exist {
 		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.DuplicateUserName,
-			ErrMsg:  conf.ErrMsg[conf.DuplicateUserName],
-			Data:    nil,
+			StatusCode: conf.DuplicateUserName,
+			Msg:        conf.ErrMsg[conf.DuplicateUserName],
+			Data:       nil,
 		}, errors.New(""))
 		return
 	}
@@ -45,9 +45,9 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 	hashedPassword, err := public.GenerateHashedPassword(param.Password)
 	if err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InternalError,
-			ErrMsg:  conf.ErrMsg[conf.InternalError],
-			Data:    nil,
+			StatusCode: conf.InternalError,
+			Msg:        conf.ErrMsg[conf.InternalError],
+			Data:       nil,
 		}, err)
 		return
 	}
@@ -56,23 +56,22 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 		UserName: param.UserName,
 		PassWord: hashedPassword,
 	}
-	//
 	if err := user.UDBHandler.CreateUser(&user.CreateUserRequest{
 		UserInfo: userInfo,
 	}); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InternalError,
-			ErrMsg:  conf.ErrMsg[conf.InternalError],
-			Data:    nil,
+			StatusCode: conf.InternalError,
+			Msg:        conf.ErrMsg[conf.InternalError],
+			Data:       nil,
 		}, err)
 		return
 	}
 
 	// 4. 返回状态码
 	public.ResponseSuccess(c, &public.DefaultResponse{
-		ErrCode: conf.RegisterSuccess,
-		ErrMsg:  conf.ErrMsg[conf.RegisterSuccess],
-		Data:    nil,
+		StatusCode: conf.RegisterSuccess,
+		Msg:        conf.ErrMsg[conf.RegisterSuccess],
+		Data:       nil,
 	})
 }
 

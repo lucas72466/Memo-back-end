@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"Memo/conf"
 	"Memo/public"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -15,9 +16,9 @@ func jwtAuth(c *gin.Context) {
 	tokenString, err := public.GetTokenFromContext(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, &public.DefaultResponse{
-			ErrCode: 100,
-			ErrMsg:  "token have not been set",
-			Data:    nil,
+			StatusCode: conf.AuthenticationFail,
+			Msg:        "token have not been set",
+			Data:       nil,
 		})
 		c.Abort()
 		return
@@ -27,9 +28,9 @@ func jwtAuth(c *gin.Context) {
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusUnauthorized, &public.DefaultResponse{
-			ErrCode: 100,
-			ErrMsg:  "token is invalid",
-			Data:    nil,
+			StatusCode: conf.AuthenticationFail,
+			Msg:        "token is invalid",
+			Data:       nil,
 		})
 		c.Abort()
 		return

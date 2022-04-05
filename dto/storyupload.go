@@ -15,7 +15,7 @@ type StoryUploadInput struct {
 }
 
 func (param *StoryUploadInput) BindParam(c *gin.Context) error {
-	if err := public.DefaultParamsBindAndValidate(c, param); err != nil {
+	if err := public.DefaultParamsBindAndValidate(c, param, true); err != nil {
 		return err
 	}
 	return nil

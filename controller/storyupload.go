@@ -1,11 +1,6 @@
 package controller
 
 import (
-	"Memo/conf"
-	"Memo/dao/memory"
-	"Memo/dto"
-	"Memo/public"
-	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,66 +14,66 @@ func StoryUploadRouteRegister(group *gin.RouterGroup) {
 
 func (handler *StoryUploadHandler) StoryUpload(c *gin.Context) {
 
-	// 1. 绑定
-	// 1.1校验参数
-	param := &dto.StoryUploadInput{}
-
-	if err := param.BindParam(c); err != nil {
-		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InvalidParam,
-			ErrMsg:  conf.ErrMsg[conf.InvalidParam],
-			Data:    nil,
-		}, err)
-		return
-	}
-
-	// 1.2若content和picture皆空，则返回err
-	if comp := IsEmptyContAndPic(param.Content, param.PictureLink); comp == true {
-		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.EmptyContentAndPicture,
-			ErrMsg:  conf.ErrMsg[conf.EmptyContentAndPicture],
-			Data:    nil,
-		}, errors.New(""))
-		return
-	}
-
-	// token中获取username
-	info, err := public.GetUserTokenInfoFromContext(c)
-	if err != nil {
-		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InternalError,
-			ErrMsg:  conf.ErrMsg[conf.InternalError],
-			Data:    nil,
-		}, err)
-		return
-	}
-
-	// 2.在数据库中生成记录
-	err = memory.MDBHandler.UploadStory(&memory.StoryUploadRequest{
-		StoryInfo: &memory.StoryInfo{
-			Title:         param.Title,
-			Content:       param.Content,
-			PictureLink:   param.PictureLink,
-			Author:        info.UserName,
-			Anonymously:   param.Anonymously,
-			PublicVisible: param.PublicVisible,
-			BuildingID:    param.BuildingID,
-		}})
-	if err != nil {
-		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InternalError,
-			ErrMsg:  conf.ErrMsg[conf.InternalError],
-			Data:    nil,
-		}, err)
-		return
-	}
-
-	// 3.返回状态
-	public.ResponseSuccess(c, &public.DefaultResponse{
-		ErrCode: conf.StoryUploadSuccess,
-		ErrMsg:  conf.ErrMsg[conf.StoryUploadSuccess],
-		Data:    nil,
-	})
+	//// 1. 绑定
+	//// 1.1校验参数
+	//param := &dto.StoryUploadInput{}
+	//
+	//if err := param.BindParam(c); err != nil {
+	//	public.ResponseError(c, &public.DefaultResponse{
+	//		ErrCode: conf.InvalidParam,
+	//		ErrMsg:  conf.ErrMsg[conf.InvalidParam],
+	//		Data:    nil,
+	//	}, err)
+	//	return
+	//}
+	//
+	//// 1.2若content和picture皆空，则返回err
+	//if comp := IsEmptyContAndPic(param.Content, param.PictureLink); comp == true {
+	//	public.ResponseError(c, &public.DefaultResponse{
+	//		ErrCode: conf.EmptyContentAndPicture,
+	//		ErrMsg:  conf.ErrMsg[conf.EmptyContentAndPicture],
+	//		Data:    nil,
+	//	}, errors.New(""))
+	//	return
+	//}
+	//
+	//// token中获取username
+	//info, err := public.GetUserTokenInfoFromContext(c)
+	//if err != nil {
+	//	public.ResponseError(c, &public.DefaultResponse{
+	//		ErrCode: conf.InternalError,
+	//		ErrMsg:  conf.ErrMsg[conf.InternalError],
+	//		Data:    nil,
+	//	}, err)
+	//	return
+	//}
+	//
+	//// 2.在数据库中生成记录
+	//err = memory.MDBHandler.UploadStory(&memory.StoryUploadRequest{
+	//	StoryInfo: &memory.StoryInfo{
+	//		Title:         param.Title,
+	//		Content:       param.Content,
+	//		PictureLink:   param.PictureLink,
+	//		Author:        info.UserName,
+	//		Anonymously:   param.Anonymously,
+	//		PublicVisible: param.PublicVisible,
+	//		BuildingID:    param.BuildingID,
+	//	}})
+	//if err != nil {
+	//	public.ResponseError(c, &public.DefaultResponse{
+	//		ErrCode: conf.InternalError,
+	//		ErrMsg:  conf.ErrMsg[conf.InternalError],
+	//		Data:    nil,
+	//	}, err)
+	//	return
+	//}
+	//
+	//// 3.返回状态
+	//public.ResponseSuccess(c, &public.DefaultResponse{
+	//	ErrCode: conf.StoryUploadSuccess,
+	//	ErrMsg:  conf.ErrMsg[conf.StoryUploadSuccess],
+	//	Data:    nil,
+	//})
 
 }
 

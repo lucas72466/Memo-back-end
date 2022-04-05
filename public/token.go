@@ -74,3 +74,11 @@ func GetUserTokenInfoFromContext(c *gin.Context) (*UserTokenInfo, error) {
 
 	return info, nil
 }
+
+func GetUserTokenInfoFromContextSilent(c *gin.Context) *UserTokenInfo {
+	if info, err := GetUserTokenInfoFromContext(c); err != nil {
+		return nil
+	} else {
+		return info
+	}
+}

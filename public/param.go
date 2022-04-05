@@ -1,21 +1,23 @@
 package public
 
 import (
-	"encoding/json"
+	"errors"
 	"github.com/gin-gonic/gin"
-	"log"
+	"github.com/go-playground/validator/v10"
 )
 
-func DefaultParamsBindAndValidate(c *gin.Context, params interface{}) error {
+func DefaultParamsBindAndValidate(c *gin.Context, params interface{}, autoSuccessLog bool) error {
 	if err := c.ShouldBind(params); err != nil {
-		return err
+		if invalid, ok := err.(*validator.InvalidValidationError); ok {
+			return errors.New("input param is invalid:" + invalid.Error())
+		}
+
+		return ParseValidatorErr(params, err)
 	}
 
-	content, err := json.Marshal(params)
-	if err != nil {
-		log.Printf("marshal param err, err:%v", err)
+	if autoSuccessLog {
+		LogWithContext(c, InfoLevel, params, nil)
 	}
-	log.Printf("param:%v", content)
 
 	return nil
 }

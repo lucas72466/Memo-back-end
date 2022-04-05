@@ -24,9 +24,9 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 
 	if err := param.BindParam(c); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.InvalidParam,
-			ErrMsg:  conf.ErrMsg[conf.InvalidParam],
-			Data:    nil,
+			StatusCode: conf.InvalidParam,
+			Msg:        err.Error(),
+			Data:       nil,
 		}, err)
 		return
 	}
@@ -38,9 +38,9 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 
 	if err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.UserNameNotFound,
-			ErrMsg:  conf.ErrMsg[conf.UserNameNotFound],
-			Data:    nil,
+			StatusCode: conf.UserNameNotFound,
+			Msg:        conf.ErrMsg[conf.UserNameNotFound],
+			Data:       nil,
 		}, err)
 	}
 
@@ -48,25 +48,24 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 	//4.如果密码错误，返回状态和文本；如果密码正确，返回状态文本和token
 	if match, err := public.ComparePasswords(param.Password, res.UserInfo.PassWord); !match {
 		public.ResponseError(c, &public.DefaultResponse{
-			ErrCode: conf.WrongPassword,
-			ErrMsg:  conf.ErrMsg[conf.WrongPassword],
-			Data:    err,
+			StatusCode: conf.WrongPassword,
+			Msg:        conf.ErrMsg[conf.WrongPassword],
+			Data:       err,
 		}, err)
 		return
 	}
 
 	//密码正确
 	tokenString, err := public.GenerateUserToken(param.UserName)
-
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
 	public.ResponseSuccess(c, &public.DefaultResponse{
-		ErrCode: conf.LoginSuccess,
-		ErrMsg:  conf.ErrMsg[conf.LoginSuccess],
-		Data:    gin.H{"token": tokenString},
+		StatusCode: conf.LoginSuccess,
+		Msg:        conf.ErrMsg[conf.LoginSuccess],
+		Data:       gin.H{"token": tokenString},
 	})
 
 }

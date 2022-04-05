@@ -26,7 +26,7 @@ type CommentUploadInput struct {
 
 // 绑定comment参数方法
 func (param *CommentUploadInput) BindParam(c *gin.Context) error {
-	if err := public.DefaultParamsBindAndValidate(c, param); err != nil {
+	if err := public.DefaultParamsBindAndValidate(c, param, true); err != nil {
 		return err
 	}
 	return nil
