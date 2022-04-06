@@ -1,4 +1,4 @@
-package dto
+package memory
 
 import (
 	"Memo/public"
@@ -11,7 +11,7 @@ type StoryUploadInput struct {
 	PictureLink   string `json:"picture_link"`
 	Anonymously   bool   `json:"anonymously"`
 	PublicVisible int    `json:"publish_visible"`
-	BuildingID    int    `json:"building_id" binding:"required"`
+	BuildingID    string `json:"building_id" binding:"required"`
 }
 
 func (param *StoryUploadInput) BindParam(c *gin.Context) error {
@@ -19,10 +19,4 @@ func (param *StoryUploadInput) BindParam(c *gin.Context) error {
 		return err
 	}
 	return nil
-}
-
-type StoryUploadOutput struct {
-	StatusCode int         `json:"status_code"`
-	Msg        string      `json:"msg"`
-	Data       interface{} `json:"data"`
 }

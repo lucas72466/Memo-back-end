@@ -3,6 +3,7 @@ package conf
 type StatusCode int
 
 var (
+	Empty              StatusCode = 0
 	InvalidParam       StatusCode = 1
 	InternalError      StatusCode = 2
 	AuthenticationFail StatusCode = 3
@@ -12,12 +13,16 @@ var (
 	UserNameNotFound  StatusCode = 102
 	WrongPassword     StatusCode = 103
 	LoginSuccess      StatusCode = 104
+
+	CommentUploadSuccess StatusCode = 200
 )
 
-var ErrMsg = map[StatusCode]string{
+var StatusMsg = map[StatusCode]string{
 	DuplicateUserName: "The username has been used",
 	InternalError:     "Internal error",
 	RegisterSuccess:   "Register successfully",
 	UserNameNotFound:  "Username doesn't exist",
 	WrongPassword:     "The password is mismatch",
+
+	CommentUploadSuccess: "comment has been upload successfully",
 }

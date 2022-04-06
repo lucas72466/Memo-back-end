@@ -2,6 +2,7 @@ package router
 
 import (
 	"Memo/controller"
+	"Memo/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +16,7 @@ func InitRouter() *gin.Engine {
 	}
 
 	memoryRouter := router.Group("/memory")
-	//memoryRouter.Use(middleware.JWTAuth())
+	memoryRouter.Use(middleware.JWTAuth())
 	{
 		controller.StoryUploadRouteRegister(memoryRouter)
 		controller.CommentUploadRouteRegister(memoryRouter)

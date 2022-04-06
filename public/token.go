@@ -13,6 +13,12 @@ type UserTokenClaims struct {
 	jwt.StandardClaims
 }
 
+const (
+	tokenFieldName = "token"
+)
+
+// TODO token refresh automatically
+
 func GenerateUserToken(username string) (string, error) {
 	expireTime := time.Now().Add(conf.DefaultUserTokenExpireTime)
 	claims := &UserTokenClaims{
@@ -34,7 +40,7 @@ func GenerateUserToken(username string) (string, error) {
 }
 
 func GetTokenFromContext(c *gin.Context) (string, error) {
-	tokenString := c.GetHeader("Authorization")
+	tokenString := c.GetHeader(tokenFieldName)
 
 	if tokenString == "" {
 		return "", errors.New("can not get token from header")

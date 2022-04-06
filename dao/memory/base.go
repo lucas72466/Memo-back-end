@@ -12,7 +12,7 @@ type StoryInfo struct {
 	Author        string `json:"author"`
 	Anonymously   bool   `json:"anonymously"`
 	PublicVisible int    `json:"publish_visible"`
-	BuildingID    int    `json:"building_id"`
+	BuildingID    string `json:"building_id"`
 }
 
 type StoryUploadRequest struct {
@@ -24,7 +24,7 @@ type CommentInfo struct {
 	Content       string `json:"content"`
 	Anonymously   int    `json:"anonymously "`
 	PublicVisible int    `json:"publicVisible"`
-	BuildingID    int64  `json:"buildingID"`
+	BuildingID    string `json:"buildingID"`
 }
 
 type CommentUploadRequest struct {

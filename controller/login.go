@@ -3,7 +3,7 @@ package controller
 import (
 	"Memo/conf"
 	"Memo/dao/user"
-	"Memo/dto"
+	userDTO "Memo/dto/user"
 	"Memo/public"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -20,7 +20,7 @@ func UserLoginRouteRegister(group *gin.RouterGroup) {
 func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 
 	//1.绑定校验参数
-	param := &dto.UserLoginInput{}
+	param := &userDTO.UserLoginInput{}
 
 	if err := param.BindParam(c); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
@@ -39,7 +39,7 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 	if err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
 			StatusCode: conf.UserNameNotFound,
-			Msg:        conf.ErrMsg[conf.UserNameNotFound],
+			Msg:        conf.StatusMsg[conf.UserNameNotFound],
 			Data:       nil,
 		}, err)
 	}
@@ -49,7 +49,7 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 	if match, err := public.ComparePasswords(param.Password, res.UserInfo.PassWord); !match {
 		public.ResponseError(c, &public.DefaultResponse{
 			StatusCode: conf.WrongPassword,
-			Msg:        conf.ErrMsg[conf.WrongPassword],
+			Msg:        conf.StatusMsg[conf.WrongPassword],
 			Data:       err,
 		}, err)
 		return
@@ -64,7 +64,7 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 
 	public.ResponseSuccess(c, &public.DefaultResponse{
 		StatusCode: conf.LoginSuccess,
-		Msg:        conf.ErrMsg[conf.LoginSuccess],
+		Msg:        conf.StatusMsg[conf.LoginSuccess],
 		Data:       gin.H{"token": tokenString},
 	})
 

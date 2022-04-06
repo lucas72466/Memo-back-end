@@ -3,7 +3,7 @@ package controller
 import (
 	"Memo/conf"
 	"Memo/dao/user"
-	"Memo/dto"
+	userDTO "Memo/dto/user"
 	"Memo/public"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func UserRegisterRouteRegister(group *gin.RouterGroup) {
 func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 
 	// 1. 绑定参数 + 参数校验
-	param := &dto.UserRegisterInput{}
+	param := &userDTO.UserRegisterInput{}
 
 	if err := param.BindParam(c); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
@@ -35,7 +35,7 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 	if exist := duplicateUser(param.UserName); exist {
 		public.ResponseError(c, &public.DefaultResponse{
 			StatusCode: conf.DuplicateUserName,
-			Msg:        conf.ErrMsg[conf.DuplicateUserName],
+			Msg:        conf.StatusMsg[conf.DuplicateUserName],
 			Data:       nil,
 		}, errors.New(""))
 		return
@@ -46,7 +46,7 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 	if err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
 			StatusCode: conf.InternalError,
-			Msg:        conf.ErrMsg[conf.InternalError],
+			Msg:        conf.StatusMsg[conf.InternalError],
 			Data:       nil,
 		}, err)
 		return
@@ -61,7 +61,7 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 	}); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
 			StatusCode: conf.InternalError,
-			Msg:        conf.ErrMsg[conf.InternalError],
+			Msg:        conf.StatusMsg[conf.InternalError],
 			Data:       nil,
 		}, err)
 		return
@@ -70,7 +70,7 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 	// 4. 返回状态码
 	public.ResponseSuccess(c, &public.DefaultResponse{
 		StatusCode: conf.RegisterSuccess,
-		Msg:        conf.ErrMsg[conf.RegisterSuccess],
+		Msg:        conf.StatusMsg[conf.RegisterSuccess],
 		Data:       nil,
 	})
 }

@@ -5,8 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO 复制粘贴的很乱 要改
-
 type MySQLDBHandler struct {
 	MySQLInst *gorm.DB
 }
@@ -15,6 +13,7 @@ func (handler *MySQLDBHandler) CommentUpload(req *CommentUploadRequest) error {
 	if req == nil || req.CommentInfo == nil {
 		return errors.New("comment info can not be empty")
 	}
+
 	comment := &Comment{
 		Author:        req.CommentInfo.Author,
 		Content:       req.CommentInfo.Content,
@@ -22,8 +21,9 @@ func (handler *MySQLDBHandler) CommentUpload(req *CommentUploadRequest) error {
 		PublicVisible: req.CommentInfo.PublicVisible,
 		BuildingID:    req.CommentInfo.BuildingID,
 	}
-	if err := handler.MySQLInst.Debug().Create(&comment).Error; err != nil {
 
+	if err := handler.MySQLInst.Debug().Create(&comment).Error; err != nil {
+		return err
 	}
 
 	return nil

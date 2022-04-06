@@ -4,7 +4,6 @@ import (
 	"Memo/conf"
 	"Memo/public"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
@@ -15,6 +14,7 @@ func JWTAuth() func(c *gin.Context) {
 func jwtAuth(c *gin.Context) {
 	tokenString, err := public.GetTokenFromContext(c)
 	if err != nil {
+		public.LogWithContext(c, public.ErrorLevel, err, nil)
 		c.JSON(http.StatusUnauthorized, &public.DefaultResponse{
 			StatusCode: conf.AuthenticationFail,
 			Msg:        "token have not been set",
@@ -26,7 +26,7 @@ func jwtAuth(c *gin.Context) {
 
 	_, claim, err := public.ParseUserToken(tokenString)
 	if err != nil {
-		log.Println(err.Error())
+		public.LogWithContext(c, public.ErrorLevel, err, nil)
 		c.JSON(http.StatusUnauthorized, &public.DefaultResponse{
 			StatusCode: conf.AuthenticationFail,
 			Msg:        "token is invalid",

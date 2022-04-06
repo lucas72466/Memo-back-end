@@ -1,69 +1,95 @@
 package controller
 
 import (
+	"Memo/conf"
+	memoryDAO "Memo/dao/memory"
+	memoryDTO "Memo/dto/memory"
+	"Memo/public"
+	"errors"
 	"github.com/gin-gonic/gin"
 )
 
-type CommentUploadHandler struct{}
+type CommentUploadHandler struct {
+	c    *gin.Context
+	req  *memoryDTO.CommentUploadInput
 
-//路由登陆
+	username string
+}
+
+func NewCommentUploadHandler() *CommentUploadHandler {
+	return &CommentUploadHandler{
+		req:  &memoryDTO.CommentUploadInput{},
+	}
+}
 
 func CommentUploadRouteRegister(group *gin.RouterGroup) {
-	handler := CommentUploadHandler{}
-	group.POST("/commentUpload", handler.CommentUpload)
+	group.POST("/commentUpload", NewCommentUploadHandler().UploadComment)
 }
-func (handler *CommentUploadHandler) CommentUpload(c *gin.Context) {
 
-	////1.绑定校验参数
-	//param := &dto.CommentUploadInput{}
-	//
-	//if err := param.BindParam(c); err != nil {
-	//	log.Println(err)
-	//
-	//	public.ResponseError(c, &public.DefaultResponse{
-	//		ErrCode: conf.InvalidParam,
-	//		ErrMsg:  conf.ErrMsg[conf.InvalidParam],
-	//		Data:    nil,
-	//	}, err)
-	//	return
-	//}
-	//
-	//// token中获取username
-	//info, err := public.GetUserTokenInfoFromContext(c)
-	//if err != nil {
-	//	public.ResponseError(c, &public.DefaultResponse{
-	//		ErrCode: conf.InternalError,
-	//		ErrMsg:  conf.ErrMsg[conf.InternalError],
-	//		Data:    nil,
-	//	}, err)
-	//	return
-	//}
-	//
-	//// 2. 插入数据库
-	//
-	//commentInfo := &memory.CommentInfo{
-	//	Author:        info.UserName,
-	//	Content:       param.Content,
-	//	Anonymously:   param.Anonymously,
-	//	PublicVisible: param.PublicVisible,
-	//	BuildingID:    param.BuildingID,
-	//}
-	//
-	//if err := memory.MDBHandler.CommentUpload(&memory.CommentUploadRequest{
-	//	CommentInfo: commentInfo,
-	//}); err != nil {
-	//	public.ResponseError(c, &public.DefaultResponse{
-	//		ErrCode: conf.InternalError,
-	//		ErrMsg:  conf.ErrMsg[conf.InternalError],
-	//		Data:    nil,
-	//	}, err)
-	//	return
-	//}
-	//
-	//// 3. 返回状态码和msg
-	//public.ResponseSuccess(c, &public.DefaultResponse{
-	//	ErrCode: conf.CommentUploadSuccess,
-	//	ErrMsg:  conf.ErrMsg[conf.CommentUploadSuccess],
-	//	Data:    nil,
-	//})
+func (handler *CommentUploadHandler) UploadComment(c *gin.Context) {
+	handler.c = c
+	for _, handleFunc := range []func()(conf.StatusCode, error) {
+		handler.bindParams, handler.getUserInfo, handler.upload,
+	} {
+		statusCode, err := handleFunc()
+		if err != nil {
+			handler.makeResponse(statusCode, err)
+			return
+		}
+	}
+
+	handler.makeResponse(conf.CommentUploadSuccess, nil)
 }
+
+func (handler *CommentUploadHandler) bindParams() (conf.StatusCode, error) {
+	if err := handler.req.BindParam(handler.c); err != nil {
+		return conf.InvalidParam, err
+	}
+	return conf.Empty, nil
+}
+
+func (handler *CommentUploadHandler) getUserInfo() (conf.StatusCode, error) {
+	info, err := public.GetUserTokenInfoFromContext(handler.c)
+	if err != nil {
+		return conf.AuthenticationFail, err
+	}
+
+	handler.username = info.UserName
+
+	return conf.Empty, nil
+}
+
+func (handler *CommentUploadHandler) upload() (conf.StatusCode, error) {
+	req := handler.req
+	commentInfo := &memoryDAO.CommentInfo{
+		Author:        handler.username,
+		Content:       req.Content,
+		Anonymously:   req.Anonymously,
+		PublicVisible: req.PublicVisible,
+		BuildingID:    req.BuildingID,
+	}
+
+	if err := memoryDAO.MDBHandler.CommentUpload(&memoryDAO.CommentUploadRequest{CommentInfo: commentInfo}); err != nil {
+		public.LogWithContext(handler.c, public.ErrorLevel, err, nil)
+		return conf.InternalError, errors.New("save comment to db fail")
+	}
+
+	return conf.Empty, nil
+}
+
+func (handler *CommentUploadHandler) makeResponse(statusCode conf.StatusCode, err error) {
+	resp := &public.DefaultResponse{
+		StatusCode: statusCode,
+	}
+
+	if err != nil {
+		resp.Msg = err.Error()
+		public.ResponseError(handler.c, resp, err)
+		return
+	}
+
+	resp.Msg = conf.StatusMsg[statusCode]
+	public.ResponseSuccess(handler.c, resp)
+}
+
+
