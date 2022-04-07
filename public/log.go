@@ -1,6 +1,7 @@
 package public
 
 import (
+	"Memo/conf"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -35,7 +36,7 @@ func InitDefaultLogger() {
 
 	if mode := gin.Mode(); mode == gin.DebugMode {
 		logger.SetLevel(logrus.TraceLevel)
-		setDebugModeOutPut(logger)
+		// setDebugModeOutPut(logger)
 	} else {
 		logger.SetLevel(logrus.InfoLevel)
 		// TODO release mode output
@@ -63,6 +64,7 @@ func injectDefaultContextInfo(c *gin.Context, extraField map[string]interface{})
 	}
 
 	extraField[DefaultIPFieldName] = c.ClientIP()
+	extraField[conf.LogIDKey] = GetLogIDFromContext(c)
 	if userInfo := GetUserTokenInfoFromContextSilent(c); userInfo != nil {
 		extraField[DefaultUsernameFieldName] = userInfo.UserName
 	}
@@ -78,4 +80,16 @@ func setDebugModeOutPut(logger *logrus.Logger) {
 	}
 
 	logger.SetOutput(io.MultiWriter(stdOut, localFile))
+}
+
+func SetLogIDToContext(c *gin.Context, id string) {
+	c.Set(conf.LogIDKey, id)
+}
+
+func GetLogIDFromContext(c *gin.Context) string {
+	return c.GetString(conf.LogIDKey)
+}
+
+func SetLogID2ResponseHeader(c *gin.Context) {
+	c.Header(conf.LogIDKey, GetLogIDFromContext(c))
 }

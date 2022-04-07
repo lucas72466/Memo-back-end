@@ -8,6 +8,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
+	router.Use(middleware.InjectLogID())
 
 	userRouter := router.Group("/user")
 	{

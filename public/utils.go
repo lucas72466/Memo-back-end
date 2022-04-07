@@ -1,6 +1,10 @@
 package public
 
-import "encoding/json"
+import (
+	"crypto/md5"
+	"encoding/hex"
+	"encoding/json"
+)
 
 func JsonString(input interface{}) string {
 	content, err := json.Marshal(input)
@@ -9,4 +13,11 @@ func JsonString(input interface{}) string {
 	}
 
 	return string(content)
+}
+
+func EncodeMD5(value string) string {
+	m := md5.New()
+	m.Write([]byte(value))
+
+	return hex.EncodeToString(m.Sum(nil))
 }
