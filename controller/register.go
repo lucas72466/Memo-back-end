@@ -24,7 +24,7 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 
 	if err := param.BindParam(c); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			StatusCode: conf.InvalidParam,
+			StatusCode: conf.InvalidParam.Code,
 			Msg:        err.Error(),
 			Data:       nil,
 		}, err)
@@ -34,8 +34,8 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 	// 2. 查询是否有重复的用户名
 	if exist := duplicateUser(param.UserName); exist {
 		public.ResponseError(c, &public.DefaultResponse{
-			StatusCode: conf.DuplicateUserName,
-			Msg:        conf.StatusMsg[conf.DuplicateUserName],
+			StatusCode: conf.DuplicateUserName.Code,
+			Msg:        conf.DuplicateUserName.Msg,
 			Data:       nil,
 		}, errors.New(""))
 		return
@@ -45,8 +45,8 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 	hashedPassword, err := public.GenerateHashedPassword(param.Password)
 	if err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			StatusCode: conf.InternalError,
-			Msg:        conf.StatusMsg[conf.InternalError],
+			StatusCode: conf.InternalError.Code,
+			Msg:        conf.InternalError.Msg,
 			Data:       nil,
 		}, err)
 		return
@@ -60,8 +60,8 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 		UserInfo: userInfo,
 	}); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			StatusCode: conf.InternalError,
-			Msg:        conf.StatusMsg[conf.InternalError],
+			StatusCode: conf.InternalError.Code,
+			Msg:        conf.InternalError.Msg,
 			Data:       nil,
 		}, err)
 		return
@@ -69,8 +69,8 @@ func (handler *UserRegisterHandler) UserRegister(c *gin.Context) {
 
 	// 4. 返回状态码
 	public.ResponseSuccess(c, &public.DefaultResponse{
-		StatusCode: conf.RegisterSuccess,
-		Msg:        conf.StatusMsg[conf.RegisterSuccess],
+		StatusCode: conf.RegisterSuccess.Code,
+		Msg:        conf.RegisterSuccess.Msg,
 		Data:       nil,
 	})
 }

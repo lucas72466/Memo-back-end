@@ -16,7 +16,7 @@ func jwtAuth(c *gin.Context) {
 	if err != nil {
 		public.LogWithContext(c, public.ErrorLevel, err, nil)
 		c.JSON(http.StatusUnauthorized, &public.DefaultResponse{
-			StatusCode: conf.AuthenticationFail,
+			StatusCode: conf.AuthenticationFail.Code,
 			Msg:        "token have not been set",
 			Data:       nil,
 		})
@@ -28,7 +28,7 @@ func jwtAuth(c *gin.Context) {
 	if err != nil {
 		public.LogWithContext(c, public.ErrorLevel, err, nil)
 		c.JSON(http.StatusUnauthorized, &public.DefaultResponse{
-			StatusCode: conf.AuthenticationFail,
+			StatusCode: conf.AuthenticationFail.Code,
 			Msg:        "token is invalid",
 			Data:       nil,
 		})

@@ -10,15 +10,15 @@ import (
 )
 
 type CommentUploadHandler struct {
-	c    *gin.Context
-	req  *memoryDTO.CommentUploadInput
+	c   *gin.Context
+	req *memoryDTO.CommentUploadInput
 
 	username string
 }
 
 func NewCommentUploadHandler() *CommentUploadHandler {
 	return &CommentUploadHandler{
-		req:  &memoryDTO.CommentUploadInput{},
+		req: &memoryDTO.CommentUploadInput{},
 	}
 }
 
@@ -28,7 +28,7 @@ func CommentUploadRouteRegister(group *gin.RouterGroup) {
 
 func (handler *CommentUploadHandler) UploadComment(c *gin.Context) {
 	handler.c = c
-	for _, handleFunc := range []func()(conf.StatusCode, error) {
+	for _, handleFunc := range []func() (conf.StatusCode, error){
 		handler.bindParams, handler.getUserInfo, handler.upload,
 	} {
 		statusCode, err := handleFunc()
@@ -45,7 +45,7 @@ func (handler *CommentUploadHandler) bindParams() (conf.StatusCode, error) {
 	if err := handler.req.BindParam(handler.c); err != nil {
 		return conf.InvalidParam, err
 	}
-	return conf.Empty, nil
+	return conf.Success, nil
 }
 
 func (handler *CommentUploadHandler) getUserInfo() (conf.StatusCode, error) {
@@ -56,7 +56,7 @@ func (handler *CommentUploadHandler) getUserInfo() (conf.StatusCode, error) {
 
 	handler.username = info.UserName
 
-	return conf.Empty, nil
+	return conf.Success, nil
 }
 
 func (handler *CommentUploadHandler) upload() (conf.StatusCode, error) {
@@ -74,22 +74,19 @@ func (handler *CommentUploadHandler) upload() (conf.StatusCode, error) {
 		return conf.InternalError, errors.New("save comment to db fail")
 	}
 
-	return conf.Empty, nil
+	return conf.Success, nil
 }
 
 func (handler *CommentUploadHandler) makeResponse(statusCode conf.StatusCode, err error) {
 	resp := &public.DefaultResponse{
-		StatusCode: statusCode,
+		StatusCode: statusCode.Code,
+		Msg:        statusCode.Msg,
 	}
 
 	if err != nil {
-		resp.Msg = err.Error()
 		public.ResponseError(handler.c, resp, err)
 		return
 	}
 
-	resp.Msg = conf.StatusMsg[statusCode]
 	public.ResponseSuccess(handler.c, resp)
 }
-
-

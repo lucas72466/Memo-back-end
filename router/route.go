@@ -22,5 +22,10 @@ func InitRouter() *gin.Engine {
 		controller.CommentUploadRouteRegister(memoryRouter)
 	}
 
+	fileRouter := router.Group("/file")
+	{
+		controller.PictureUploadRouteRegister(fileRouter)
+	}
+
 	return router
 }

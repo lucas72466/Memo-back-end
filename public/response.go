@@ -1,15 +1,14 @@
 package public
 
 import (
-	"Memo/conf"
 	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
 type DefaultResponse struct {
-	StatusCode conf.StatusCode `json:"status_code"`
-	Msg        string          `json:"msg"`
-	Data       interface{}     `json:"data"`
+	StatusCode int         `json:"status_code"`
+	Msg        string      `json:"msg"`
+	Data       interface{} `json:"data"`
 }
 
 // TODO 加入日志和链路相关逻辑，本次实现最简单版本

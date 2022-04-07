@@ -1,11 +1,17 @@
 package main
 
 import (
+	"Memo/conf"
+	"Memo/dao"
 	"Memo/public"
 	"Memo/router"
 )
 
 func main() {
+	conf.InitConfig()
+
+	dao.InitDAOInst()
+
 	r := router.InitRouter()
 
 	public.InitValidator()

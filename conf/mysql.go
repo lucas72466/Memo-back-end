@@ -1,18 +1,26 @@
 package conf
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/spf13/viper"
+)
 
 var (
-	defaultMySQLUserName = "admin"
-	defaultMySQLPassword = "qaQLX2iy6jKjEDEyg4eZ"
-	defaultMySQLDBName   = "Memo"
-	defaultMySQLIP       = "memo-backend.ckasaaojz9uh.eu-west-2.rds.amazonaws.com"
+	defaultMySQLUserName string
+	defaultMySQLPassword string
+	defaultMySQLDBName   string
+	defaultMySQLHost     string
 
 	defaultMySQLLocalDSNTemplate = "%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True"
 )
 
-var DefaultLocalMySQLDSN = generateDefaultLocalMySQLDSN()
+func InitMySQLConfig() {
+	defaultMySQLUserName = viper.GetString("database.MySQLUserName")
+	defaultMySQLPassword = viper.GetString("database.MySQLPassword")
+	defaultMySQLDBName = viper.GetString("database.MySQLDBName")
+	defaultMySQLHost = viper.GetString("database.MySQLDBHost")
+}
 
-func generateDefaultLocalMySQLDSN() string {
-	return fmt.Sprintf(defaultMySQLLocalDSNTemplate, defaultMySQLUserName, defaultMySQLPassword, defaultMySQLIP, defaultMySQLDBName)
+func GetDefaultLocalMySQLDSN() string {
+	return fmt.Sprintf(defaultMySQLLocalDSNTemplate, defaultMySQLUserName, defaultMySQLPassword, defaultMySQLHost, defaultMySQLDBName)
 }

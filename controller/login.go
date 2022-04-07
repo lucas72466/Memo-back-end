@@ -24,7 +24,7 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 
 	if err := param.BindParam(c); err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			StatusCode: conf.InvalidParam,
+			StatusCode: conf.InvalidParam.Code,
 			Msg:        err.Error(),
 			Data:       nil,
 		}, err)
@@ -38,8 +38,8 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 
 	if err != nil {
 		public.ResponseError(c, &public.DefaultResponse{
-			StatusCode: conf.UserNameNotFound,
-			Msg:        conf.StatusMsg[conf.UserNameNotFound],
+			StatusCode: conf.UserNameNotFound.Code,
+			Msg:        conf.UserNameNotFound.Msg,
 			Data:       nil,
 		}, err)
 	}
@@ -48,8 +48,8 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 	//4.如果密码错误，返回状态和文本；如果密码正确，返回状态文本和token
 	if match, err := public.ComparePasswords(param.Password, res.UserInfo.PassWord); !match {
 		public.ResponseError(c, &public.DefaultResponse{
-			StatusCode: conf.WrongPassword,
-			Msg:        conf.StatusMsg[conf.WrongPassword],
+			StatusCode: conf.WrongPassword.Code,
+			Msg:        conf.WrongPassword.Msg,
 			Data:       err,
 		}, err)
 		return
@@ -63,8 +63,8 @@ func (handler *UserLoginHandler) UserLogin(c *gin.Context) {
 	}
 
 	public.ResponseSuccess(c, &public.DefaultResponse{
-		StatusCode: conf.LoginSuccess,
-		Msg:        conf.StatusMsg[conf.LoginSuccess],
+		StatusCode: conf.LoginSuccess.Code,
+		Msg:        conf.LoginSuccess.Msg,
 		Data:       gin.H{"token": tokenString},
 	})
 
