@@ -9,9 +9,9 @@ type Anonymously int
 type PublicVisible int
 
 const (
-	VisibleToMyself PublicVisible = iota + 1
+	VisibleToAll PublicVisible = iota
 	VisibleToFriend
-	VisibleToAll
+	VisibleToMySelf
 )
 
 const (
@@ -21,10 +21,10 @@ const (
 
 // 定义comment input结构体
 type CreateCommentInput struct {
-	Content       string `json:"content" binding:"required,max=50,min=1" customize_err_msg:"length of content should between 1-50"`
-	Anonymously   int    `json:"anonymously"`
-	PublicVisible int    `json:"public_visible" binding:"required"`
-	BuildingID    string `json:"building_id" binding:"required"`
+	Content       string        `json:"content" binding:"required,max=50,min=1" customize_err_msg:"length of content should between 1-50"`
+	Anonymously   Anonymously   `json:"anonymously"`
+	PublicVisible PublicVisible `json:"public_visible"`
+	BuildingID    string        `json:"building_id" binding:"required"`
 }
 
 // 绑定comment参数方法

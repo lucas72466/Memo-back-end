@@ -1,7 +1,5 @@
 package memory
 
-// 定义数据库结构
-
 type Comment struct {
 	ID            int64  `json:"id" gorm:"column:id; autoIncrement"`
 	Author        string `json:"author" gorm:"column:author"`
@@ -18,16 +16,16 @@ func (comment *Comment) TableName() string {
 }
 
 type Story struct {
-	ID            int    `json:"id"              gorm:"column:id; autoIncrement"`
-	Author        string `json:"author"          gorm:"column:author"`
-	Title         string `json:"title"           gorm:"column:title"`
-	Content       string `json:"content"         gorm:"column:content"`
-	PictureLink   string `json:"picture_link"    gorm:"picture_link"`
-	Anonymously   bool   `json:"anonymously"     gorm:"anonymously"`
-	PublicVisible int    `json:"public_visible"  gorm:"public_visible"`
-	BuildingID    string `json:"building_id"     gorm:"building_id"`
-	CreateTime    int64  `json:"create_time"     gorm:"column:create_time; autoCreateTime:milli"`
-	UpdateTime    int64  `json:"update_time"     gorm:"column:update_time; autoUpdateTime:milli"`
+	ID            int     `json:"id"              gorm:"column:id; autoIncrement"`
+	Author        string  `json:"author"          gorm:"column:author"`
+	Title         string  `json:"title"           gorm:"column:title"`
+	Content       *string `json:"content"         gorm:"column:content"`
+	PicturePaths  string  `json:"picture_paths"   gorm:"picture_paths"`
+	Anonymously   int     `json:"anonymously"     gorm:"anonymously"`
+	PublicVisible int     `json:"public_visible"  gorm:"public_visible"`
+	BuildingID    string  `json:"building_id"     gorm:"building_id"`
+	CreateTime    int64   `json:"create_time"     gorm:"column:create_time; autoCreateTime:milli"`
+	UpdateTime    int64   `json:"update_time"     gorm:"column:update_time; autoUpdateTime:milli"`
 }
 
 func (story *Story) TableName() string {

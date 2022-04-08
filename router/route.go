@@ -19,7 +19,7 @@ func InitRouter() *gin.Engine {
 	memoryRouter := router.Group("/memory")
 	memoryRouter.Use(middleware.JWTAuth())
 	{
-		controller.StoryUploadRouteRegister(memoryRouter)
+		controller.CreateStoryRouteRegister(memoryRouter)
 		controller.CreateCommentRouteRegister(memoryRouter)
 	}
 

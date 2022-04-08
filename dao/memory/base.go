@@ -1,21 +1,21 @@
 package memory
 
 type DBHandler interface {
-	UploadStory(req *StoryUploadRequest) error
+	CreateStory(req *CreateStoryRequest) error
 	CreateComment(req *CreateCommentRequest) error
 }
 
 type StoryInfo struct {
-	Title         string `json:"title"`
-	Content       string `json:"content"`
-	PictureLink   string `json:"picture_link"`
-	Author        string `json:"author"`
-	Anonymously   bool   `json:"anonymously"`
-	PublicVisible int    `json:"publish_visible"`
-	BuildingID    string `json:"building_id"`
+	Title         string   `json:"title"`
+	Content       *string  `json:"content"`
+	PicturePath   []string `json:"picture_link"`
+	Author        string   `json:"author"`
+	Anonymously   int      `json:"anonymously"`
+	PublicVisible int      `json:"publish_visible"`
+	BuildingID    string   `json:"building_id"`
 }
 
-type StoryUploadRequest struct {
+type CreateStoryRequest struct {
 	StoryInfo *StoryInfo
 }
 

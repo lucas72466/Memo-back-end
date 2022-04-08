@@ -29,7 +29,7 @@ func (handler *MySQLDBHandler) CreateComment(req *CreateCommentRequest) error {
 	return nil
 }
 
-func (handler *MySQLDBHandler) UploadStory(req *StoryUploadRequest) error {
+func (handler *MySQLDBHandler) CreateStory(req *CreateStoryRequest) error {
 	info := req.StoryInfo
 	if info == nil {
 		return errors.New("story info can not be empty")
@@ -39,7 +39,7 @@ func (handler *MySQLDBHandler) UploadStory(req *StoryUploadRequest) error {
 		Author:        info.Author,
 		Title:         info.Title,
 		Content:       info.Content,
-		PictureLink:   info.PictureLink,
+		PicturePaths:  convertPicRelativePathsToMySQLSingleString(info.PicturePath),
 		Anonymously:   info.Anonymously,
 		PublicVisible: info.PublicVisible,
 		BuildingID:    info.BuildingID,

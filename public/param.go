@@ -8,6 +8,7 @@ import (
 
 func DefaultParamsBindAndValidate(c *gin.Context, params interface{}, autoSuccessLog bool) error {
 	if err := c.ShouldBind(params); err != nil {
+		LogWithContext(c, ErrorLevel, err, nil)
 		if invalid, ok := err.(*validator.InvalidValidationError); ok {
 			return errors.New("input param is invalid:" + invalid.Error())
 		}
@@ -16,7 +17,7 @@ func DefaultParamsBindAndValidate(c *gin.Context, params interface{}, autoSucces
 	}
 
 	if autoSuccessLog {
-		LogWithContext(c, InfoLevel, params, nil)
+		LogWithContext(c, InfoLevel, JsonString(params), nil)
 	}
 
 	return nil

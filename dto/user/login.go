@@ -7,7 +7,7 @@ import (
 
 // 定义input结构体
 type UserLoginInput struct {
-	UserName string `json:"user_name" binding:"required,max=20,min=5" customize_err_msg:"length of username should between 5-20"`
+	UserName string `json:"user_name" binding:"required,max=50,min=5" customize_err_msg:"length of username should between 5-50"`
 	Password string `json:"password" binding:"required,max=20,min=8,passwordValidate" customize_err_msg:"length of password should between 8-20 and at contain both upper case, lower case alphabet and number"`
 }
 

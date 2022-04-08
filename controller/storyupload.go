@@ -28,7 +28,7 @@ func (handler *StoryUploadHandler) StoryUpload(c *gin.Context) {
 	//}
 	//
 	//// 1.2若content和picture皆空，则返回err
-	//if comp := IsEmptyContAndPic(param.Content, param.PictureLink); comp == true {
+	//if comp := IsEmptyContAndPic(param.Content, param.PicturePath); comp == true {
 	//	public.ResponseError(c, &public.DefaultResponse{
 	//		ErrCode: conf.EmptyContentAndPicture,
 	//		ErrMsg:  conf.ErrMsg[conf.EmptyContentAndPicture],
@@ -49,11 +49,11 @@ func (handler *StoryUploadHandler) StoryUpload(c *gin.Context) {
 	//}
 	//
 	//// 2.在数据库中生成记录
-	//err = memory.MDBHandler.UploadStory(&memory.StoryUploadRequest{
+	//err = memory.MDBHandler.CreateStory(&memory.StoryUploadRequest{
 	//	StoryInfo: &memory.StoryInfo{
 	//		Title:         param.Title,
 	//		Content:       param.Content,
-	//		PictureLink:   param.PictureLink,
+	//		PicturePath:   param.PicturePath,
 	//		Author:        info.UserName,
 	//		Anonymously:   param.Anonymously,
 	//		PublicVisible: param.PublicVisible,
