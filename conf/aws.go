@@ -7,7 +7,7 @@ var (
 	SecretKey   string
 )
 
-func InitAWSConfig() {
+func initAWSConfig() {
 	SecretKeyID = viper.GetString("IAM.secretKeyID")
 	SecretKey = viper.GetString("IAM.secretKey")
 }

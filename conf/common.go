@@ -6,13 +6,20 @@ import (
 )
 
 // config for picture upload
-const (
+var (
 	PictureUploadMemoryLimit = 32 << 20
-	PictureUploadKey         = "file"
-	PictureRelateBuildIDKey  = "building_id"
-	PictureStorageBucketName = "image.memoisland.com"
-	PictureUploadTimeOut     = time.Second * 5
+	PictureUploadKey         string
+	PictureRelateBuildIDKey  string
+	PictureStorageBucketName string
+	PictureUploadTimeOut     time.Duration
 )
+
+func initPictureUploadConfig() {
+	PictureUploadKey = viper.GetString("picture.uploadKey")
+	PictureRelateBuildIDKey = viper.GetString("picture.relateBuildIDKey")
+	PictureStorageBucketName = viper.GetString("picture.storageBucketName")
+	PictureUploadTimeOut = time.Second * time.Duration(viper.GetInt("picture.uploadTimeOut"))
+}
 
 // config for token generate
 var (
@@ -21,7 +28,7 @@ var (
 	SingedKey                  []byte
 )
 
-func InitTokenConfig() {
+func initTokenConfig() {
 	DefaultUserTokenExpireTime = time.Hour * time.Duration(viper.GetInt("token.expireTime"))
 	Issuer = viper.GetString("token.issuer")
 	SingedKey = []byte(viper.GetString("token.signedKey"))
@@ -32,7 +39,7 @@ var (
 	LogIDKey string
 )
 
-func InitLogConfig() {
+func initLogConfig() {
 	LogIDKey = viper.GetString("log.logIDKey")
 }
 

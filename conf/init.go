@@ -21,10 +21,11 @@ func InitConfig() {
 		panic(err)
 	}
 
-	InitMySQLConfig()
-	InitTokenConfig()
-	InitAWSConfig()
-	InitLogConfig()
+	initMySQLConfig()
+	initTokenConfig()
+	initAWSConfig()
+	initLogConfig()
+	initPictureUploadConfig()
 }
 
 func initPFlag() {

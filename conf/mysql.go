@@ -14,7 +14,7 @@ var (
 	defaultMySQLLocalDSNTemplate = "%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True"
 )
 
-func InitMySQLConfig() {
+func initMySQLConfig() {
 	defaultMySQLUserName = viper.GetString("database.MySQLUserName")
 	defaultMySQLPassword = viper.GetString("database.MySQLPassword")
 	defaultMySQLDBName = viper.GetString("database.MySQLDBName")
