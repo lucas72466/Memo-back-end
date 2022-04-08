@@ -24,7 +24,7 @@ var (
 	WrongPassword     = NewStatusCode(103, "username and password are mismatch")
 	LoginSuccess      = NewStatusCode(104, "login successfully")
 
-	CommentUploadSuccess = NewStatusCode(200, "comment has been upload successfully")
+	CreateCommentSuccess = NewStatusCode(200, "comment has been create successfully")
 
 	PictureInvalid       = NewStatusCode(300, "upload picture is invalid, check format and size")
 	PictureUploadSuccess = NewStatusCode(301, "picture upload successfully")

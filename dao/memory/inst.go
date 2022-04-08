@@ -9,7 +9,7 @@ type MySQLDBHandler struct {
 	MySQLInst *gorm.DB
 }
 
-func (handler *MySQLDBHandler) CommentUpload(req *CommentUploadRequest) error {
+func (handler *MySQLDBHandler) CreateComment(req *CreateCommentRequest) error {
 	if req == nil || req.CommentInfo == nil {
 		return errors.New("comment info can not be empty")
 	}
@@ -30,7 +30,6 @@ func (handler *MySQLDBHandler) CommentUpload(req *CommentUploadRequest) error {
 }
 
 func (handler *MySQLDBHandler) UploadStory(req *StoryUploadRequest) error {
-	// TODO 无从下手 我不会了 交给你了orz
 	info := req.StoryInfo
 	if info == nil {
 		return errors.New("story info can not be empty")

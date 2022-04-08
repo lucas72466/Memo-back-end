@@ -20,7 +20,7 @@ func InitRouter() *gin.Engine {
 	memoryRouter.Use(middleware.JWTAuth())
 	{
 		controller.StoryUploadRouteRegister(memoryRouter)
-		controller.CommentUploadRouteRegister(memoryRouter)
+		controller.CreateCommentRouteRegister(memoryRouter)
 	}
 
 	fileRouter := router.Group("/file")

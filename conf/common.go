@@ -10,7 +10,7 @@ const (
 	PictureUploadMemoryLimit = 32 << 20
 	PictureUploadKey         = "file"
 	PictureRelateBuildIDKey  = "building_id"
-	PictureStorageBucketName = "memo-backend"
+	PictureStorageBucketName = "image.memoisland.com"
 	PictureUploadTimeOut     = time.Second * 5
 )
 

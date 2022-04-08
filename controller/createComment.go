@@ -9,27 +9,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type CommentUploadHandler struct {
+type CreateCommentHandler struct {
 	c   *gin.Context
-	req *memoryDTO.CommentUploadInput
+	req *memoryDTO.CreateCommentInput
 
 	username string
 }
 
-func NewCommentUploadHandler() *CommentUploadHandler {
-	return &CommentUploadHandler{
-		req: &memoryDTO.CommentUploadInput{},
+func NewCreateCommentHandler() *CreateCommentHandler {
+	return &CreateCommentHandler{
+		req: &memoryDTO.CreateCommentInput{},
 	}
 }
 
-func CommentUploadRouteRegister(group *gin.RouterGroup) {
-	group.POST("/commentUpload", NewCommentUploadHandler().UploadComment)
+func CreateCommentRouteRegister(group *gin.RouterGroup) {
+	group.POST("/comment/create", NewCreateCommentHandler().CreateComment)
 }
 
-func (handler *CommentUploadHandler) UploadComment(c *gin.Context) {
+func (handler *CreateCommentHandler) CreateComment(c *gin.Context) {
 	handler.c = c
 	for _, handleFunc := range []func() (conf.StatusCode, error){
-		handler.bindParams, handler.getUserInfo, handler.upload,
+		handler.bindParams, handler.getUserInfo, handler.create,
 	} {
 		statusCode, err := handleFunc()
 		if err != nil {
@@ -38,17 +38,17 @@ func (handler *CommentUploadHandler) UploadComment(c *gin.Context) {
 		}
 	}
 
-	handler.makeResponse(conf.CommentUploadSuccess, nil)
+	handler.makeResponse(conf.CreateCommentSuccess, nil)
 }
 
-func (handler *CommentUploadHandler) bindParams() (conf.StatusCode, error) {
+func (handler *CreateCommentHandler) bindParams() (conf.StatusCode, error) {
 	if err := handler.req.BindParam(handler.c); err != nil {
 		return conf.InvalidParam, err
 	}
 	return conf.Success, nil
 }
 
-func (handler *CommentUploadHandler) getUserInfo() (conf.StatusCode, error) {
+func (handler *CreateCommentHandler) getUserInfo() (conf.StatusCode, error) {
 	info, err := public.GetUserTokenInfoFromContext(handler.c)
 	if err != nil {
 		return conf.AuthenticationFail, err
@@ -59,7 +59,7 @@ func (handler *CommentUploadHandler) getUserInfo() (conf.StatusCode, error) {
 	return conf.Success, nil
 }
 
-func (handler *CommentUploadHandler) upload() (conf.StatusCode, error) {
+func (handler *CreateCommentHandler) create() (conf.StatusCode, error) {
 	req := handler.req
 	commentInfo := &memoryDAO.CommentInfo{
 		Author:        handler.username,
@@ -69,7 +69,7 @@ func (handler *CommentUploadHandler) upload() (conf.StatusCode, error) {
 		BuildingID:    req.BuildingID,
 	}
 
-	if err := memoryDAO.MDBHandler.CommentUpload(&memoryDAO.CommentUploadRequest{CommentInfo: commentInfo}); err != nil {
+	if err := memoryDAO.MDBHandler.CreateComment(&memoryDAO.CreateCommentRequest{CommentInfo: commentInfo}); err != nil {
 		public.LogWithContext(handler.c, public.ErrorLevel, err, nil)
 		return conf.InternalError, errors.New("save comment to db fail")
 	}
@@ -77,7 +77,7 @@ func (handler *CommentUploadHandler) upload() (conf.StatusCode, error) {
 	return conf.Success, nil
 }
 
-func (handler *CommentUploadHandler) makeResponse(statusCode conf.StatusCode, err error) {
+func (handler *CreateCommentHandler) makeResponse(statusCode conf.StatusCode, err error) {
 	resp := &public.DefaultResponse{
 		StatusCode: statusCode.Code,
 		Msg:        statusCode.Msg,

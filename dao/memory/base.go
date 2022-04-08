@@ -2,7 +2,7 @@ package memory
 
 type DBHandler interface {
 	UploadStory(req *StoryUploadRequest) error
-	CommentUpload(req *CommentUploadRequest) error
+	CreateComment(req *CreateCommentRequest) error
 }
 
 type StoryInfo struct {
@@ -27,6 +27,6 @@ type CommentInfo struct {
 	BuildingID    string `json:"buildingID"`
 }
 
-type CommentUploadRequest struct {
+type CreateCommentRequest struct {
 	CommentInfo *CommentInfo
 }
