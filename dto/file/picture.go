@@ -9,12 +9,12 @@ import (
 )
 
 type PictureUploadInput struct {
-	BuildingID string `json:"building_id" binding:"required"`
-	PicFileHeaders  []*multipart.FileHeader `json:"file_headers"`
+	BuildingID     string                  `json:"building_id" binding:"required"`
+	PicFileHeaders []*multipart.FileHeader `json:"file_headers"`
 }
 
 func (param *PictureUploadInput) BindParam(c *gin.Context) error {
-	if err := c.Request.ParseMultipartForm(conf.PictureUploadMemoryLimit); err != nil {
+	if err := c.Request.ParseMultipartForm(int64(conf.PictureUploadMemoryLimit)); err != nil {
 		public.LogWithContext(c, public.ErrorLevel, err, nil)
 		return err
 	}

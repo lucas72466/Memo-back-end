@@ -57,6 +57,20 @@ func ParseUserToken(tokenString string) (*jwt.Token, *UserTokenClaims, error) {
 	return token, claims, err
 }
 
+func ParseTokenClaimFromContext(c *gin.Context) (*UserTokenClaims, error) {
+	tokenString, err := GetTokenFromContext(c)
+	if err != nil {
+		return nil, err
+	}
+
+	_, claim, err := ParseUserToken(tokenString)
+	if err != nil {
+		return nil, err
+	}
+
+	return claim, nil
+}
+
 type UserTokenInfo struct {
 	UserName string
 }

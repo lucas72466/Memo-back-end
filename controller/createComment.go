@@ -23,7 +23,7 @@ func NewCreateCommentHandler() *CreateCommentHandler {
 }
 
 func CreateCommentRouteRegister(group *gin.RouterGroup) {
-	group.POST("/comment/create", NewCreateCommentHandler().CreateComment)
+	group.POST("/comment", NewCreateCommentHandler().CreateComment)
 }
 
 func (handler *CreateCommentHandler) CreateComment(c *gin.Context) {
@@ -62,11 +62,11 @@ func (handler *CreateCommentHandler) getUserInfo() (conf.StatusCode, error) {
 func (handler *CreateCommentHandler) create() (conf.StatusCode, error) {
 	req := handler.req
 	commentInfo := &memoryDAO.CommentInfo{
-		Author:        handler.username,
-		Content:       req.Content,
-		Anonymously:   int(req.Anonymously),
-		PublicVisible: int(req.PublicVisible),
-		BuildingID:    req.BuildingID,
+		Author:      handler.username,
+		Content:     req.Content,
+		Anonymously: req.Anonymously,
+		Visibility:  req.Visibility,
+		BuildingID:  req.BuildingID,
 	}
 
 	if err := memoryDAO.MDBHandler.CreateComment(&memoryDAO.CreateCommentRequest{CommentInfo: commentInfo}); err != nil {

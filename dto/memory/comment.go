@@ -6,11 +6,10 @@ import (
 )
 
 type Anonymously int
-type PublicVisible int
+type Visibility int
 
 const (
-	VisibleToAll PublicVisible = iota
-	VisibleToFriend
+	VisibleToAll Visibility = iota
 	VisibleToMySelf
 )
 
@@ -21,10 +20,10 @@ const (
 
 // 定义comment input结构体
 type CreateCommentInput struct {
-	Content       string        `json:"content" binding:"required,max=50,min=1" customize_err_msg:"length of content should between 1-50"`
-	Anonymously   Anonymously   `json:"anonymously"`
-	PublicVisible PublicVisible `json:"public_visible"`
-	BuildingID    string        `json:"building_id" binding:"required"`
+	Content     string      `json:"content" binding:"required,max=50,min=1" customize_err_msg:"length of content should between 1-50"`
+	Anonymously Anonymously `json:"anonymously"`
+	Visibility  Visibility  `json:"visibility"`
+	BuildingID  string      `json:"building_id" binding:"required"`
 }
 
 // 绑定comment参数方法
@@ -33,4 +32,37 @@ func (param *CreateCommentInput) BindParam(c *gin.Context) error {
 		return err
 	}
 	return nil
+}
+
+type SearchCommentCondition struct {
+	BuildingID string `json:"building_id"`
+	Author     string `json:"author"`
+	StartTime  int64  `json:"start_time"`
+	EndTime    int64  `json:"end_time"`
+}
+
+type SearchCommentInput struct {
+	Condition *SearchCommentCondition `json:"condition" binding:"required"`
+	PageSize  int                     `json:"page_size" binding:"required"`
+	Page      int                     `json:"page" binding:"required"`
+}
+
+func (param *SearchCommentInput) BindParam(c *gin.Context) error {
+	if err := public.DefaultParamsBindAndValidate(c, param, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+type Comment struct {
+	CommentID  int64  `json:"comment_id"`
+	Author     string `json:"author"`
+	BuildingID string `json:"building_id"`
+	Content    string `json:"content"`
+}
+
+type SearchCommentOutputData struct {
+	Comments []*Comment `json:"comments"`
+	Count    int        `json:"count"`
+	Total    int32      `json:"total"`
 }

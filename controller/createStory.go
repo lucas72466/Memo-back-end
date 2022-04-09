@@ -23,7 +23,7 @@ func NewCreateStoryHandler() *CreateStoryHandler {
 }
 
 func CreateStoryRouteRegister(group *gin.RouterGroup) {
-	group.POST("story/create", NewCreateStoryHandler().CreateStory)
+	group.POST("/story", NewCreateStoryHandler().CreateStory)
 }
 
 func (handler *CreateStoryHandler) CreateStory(c *gin.Context) {
@@ -76,13 +76,13 @@ func (handler *CreateStoryHandler) create() (conf.StatusCode, error) {
 	req := handler.req
 
 	story := &memoryDAO.StoryInfo{
-		Title:         req.Title,
-		Content:       req.Content,
-		PicturePath:   handler.pictureRelativePaths,
-		Author:        handler.username,
-		Anonymously:   int(req.Anonymously),
-		PublicVisible: int(req.PublicVisible),
-		BuildingID:    req.BuildingID,
+		Title:       req.Title,
+		Content:     req.Content,
+		PicturePath: handler.pictureRelativePaths,
+		Author:      handler.username,
+		Anonymously: int(req.Anonymously),
+		Visibility:  int(req.Visibility),
+		BuildingID:  req.BuildingID,
 	}
 
 	err := memoryDAO.MDBHandler.CreateStory(&memoryDAO.CreateStoryRequest{StoryInfo: story})

@@ -21,3 +21,13 @@ func EncodeMD5(value string) string {
 
 	return hex.EncodeToString(m.Sum(nil))
 }
+
+func CheckIsStringParamsAllEmpty(params ...string) bool {
+	for _, param := range params {
+		if param != "" {
+			return false
+		}
+	}
+
+	return true
+}
