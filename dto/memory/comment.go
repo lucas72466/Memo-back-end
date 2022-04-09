@@ -59,6 +59,8 @@ type Comment struct {
 	Author     string `json:"author"`
 	BuildingID string `json:"building_id"`
 	Content    string `json:"content"`
+	CreateTime int64  `json:"create_time"`
+	UpdateTime int64  `json:"update_time"`
 }
 
 type SearchCommentOutputData struct {

@@ -16,16 +16,19 @@ func InitRouter() *gin.Engine {
 		controller.UserRegisterRouteRegister(userRouter)
 	}
 
-	memoryCreateRouter := router.Group("/memory/crate")
+	memoryRouter := router.Group("/memory")
+
+	memoryCreateRouter := memoryRouter.Group("/create")
 	memoryCreateRouter.Use(middleware.JWTAuth())
 	{
 		controller.CreateStoryRouteRegister(memoryCreateRouter)
 		controller.CreateCommentRouteRegister(memoryCreateRouter)
 	}
 
-	memorySearchRouter := router.Group("/memory/search")
+	memorySearchRouter := memoryRouter.Group("/search")
 	{
 		controller.SearchCommentRouteRegister(memorySearchRouter)
+		controller.SearchStoryRouteRegister(memorySearchRouter)
 	}
 
 	fileRouter := router.Group("/file")

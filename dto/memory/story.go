@@ -20,3 +20,41 @@ func (param *CreateStoryInput) BindParam(c *gin.Context) error {
 	}
 	return nil
 }
+
+type SearchStoryCondition struct {
+	BuildingID string `json:"building_id"`
+	Author     string `json:"author"`
+	Title      string `json:"title"`
+	StartTime  int64  `json:"start_time"`
+	EndTime    int64  `json:"end_time"`
+}
+
+type SearchStoryInput struct {
+	Condition *SearchStoryCondition `json:"condition" binding:"required"`
+	PageSize  int                   `json:"page_size" binding:"required"`
+	Page      int                   `json:"page" binding:"required"`
+}
+
+func (param *SearchStoryInput) BindParam(c *gin.Context) error {
+	if err := public.DefaultParamsBindAndValidate(c, param, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+type Story struct {
+	ID           int64    `json:"id"`
+	Author       string   `json:"author"`
+	BuildingID   string   `json:"building_id"`
+	Title        string   `json:"title"`
+	Content      *string  `json:"content"`
+	PictureLinks []string `json:"picture_links"`
+	CreateTime   int64    `json:"create_time"`
+	UpdateTime   int64    `json:"update_time"`
+}
+
+type SearchStoryOutputData struct {
+	Stories []*Story `json:"stories"`
+	Count   int      `json:"count"`
+	Total   int32    `json:"total"`
+}

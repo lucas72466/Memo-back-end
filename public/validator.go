@@ -45,7 +45,7 @@ func ParseValidatorErr(params interface{}, err error) error {
 	return errors.New(convertFieldErrs2Str(fieldErrs))
 }
 
-func convertFieldErrs2Str(fieldErrs map[string]string) string{
+func convertFieldErrs2Str(fieldErrs map[string]string) string {
 	bf := strings.Builder{}
 	for fieldName, errInfo := range fieldErrs {
 		bf.WriteString(fmt.Sprintf("%s:%s  ", fieldName, errInfo))

@@ -25,5 +25,3 @@ func jwtAuth(c *gin.Context) {
 
 	public.SetUserTokenInfoToContext(&public.UserTokenInfo{UserName: claim.UserName}, c)
 }
-
-

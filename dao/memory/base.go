@@ -6,16 +6,20 @@ type DBHandler interface {
 	CreateStory(req *CreateStoryRequest) error
 	CreateComment(req *CreateCommentRequest) error
 	SearchComment(req *SearchCommentRequest) (*SearchCommentResult, error)
+	SearchStory(req *SearchStoryRequest) (*SearchStoryResult, error)
 }
 
 type StoryInfo struct {
-	Title       string   `json:"title"`
-	Content     *string  `json:"content"`
-	PicturePath []string `json:"picture_link"`
-	Author      string   `json:"author"`
-	Anonymously int      `json:"anonymously"`
-	Visibility  int      `json:"visibility"`
-	BuildingID  string   `json:"building_id"`
+	ID           int64                 `json:"ID"`
+	Title        string                `json:"title"`
+	Content      *string               `json:"content"`
+	PicturePaths []string              `json:"picture_paths"`
+	Author       string                `json:"author"`
+	Anonymously  memoryDTO.Anonymously `json:"anonymously"`
+	Visibility   memoryDTO.Visibility  `json:"visibility"`
+	BuildingID   string                `json:"building_id"`
+	CreateTime   int64                 `json:"create_time"`
+	UpdateTime   int64                 `json:"update_time"`
 }
 
 type CreateStoryRequest struct {
@@ -29,6 +33,8 @@ type CommentInfo struct {
 	Anonymously memoryDTO.Anonymously `json:"anonymously "`
 	Visibility  memoryDTO.Visibility  `json:"visibility"`
 	BuildingID  string                `json:"building_id"`
+	CreateTime  int64                 `json:"create_time"`
+	UpdateTime  int64                 `json:"update_time"`
 }
 
 type CreateCommentRequest struct {
@@ -47,4 +53,19 @@ type SearchCommentRequest struct {
 type SearchCommentResult struct {
 	Comments []*CommentInfo `json:"comments"`
 	Total    int32          `json:"total"`
+}
+
+type SearchStoryRequest struct {
+	BuildingID string `json:"building_id"`
+	Author     string `json:"author"`
+	Title      string `json:"title"`
+	StartTime  int64  `json:"start_time"`
+	EndTime    int64  `json:"end_time"`
+	PageSize   int    `json:"page_size"`
+	Page       int    `json:"page"`
+}
+
+type SearchStoryResult struct {
+	Stories []*StoryInfo `json:"stories"`
+	Total   int32        `json:"total"`
 }

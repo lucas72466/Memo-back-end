@@ -76,13 +76,13 @@ func (handler *CreateStoryHandler) create() (conf.StatusCode, error) {
 	req := handler.req
 
 	story := &memoryDAO.StoryInfo{
-		Title:       req.Title,
-		Content:     req.Content,
-		PicturePath: handler.pictureRelativePaths,
-		Author:      handler.username,
-		Anonymously: int(req.Anonymously),
-		Visibility:  int(req.Visibility),
-		BuildingID:  req.BuildingID,
+		Title:        req.Title,
+		Content:      req.Content,
+		PicturePaths: handler.pictureRelativePaths,
+		Author:       handler.username,
+		Anonymously:  req.Anonymously,
+		Visibility:   req.Visibility,
+		BuildingID:   req.BuildingID,
 	}
 
 	err := memoryDAO.MDBHandler.CreateStory(&memoryDAO.CreateStoryRequest{StoryInfo: story})

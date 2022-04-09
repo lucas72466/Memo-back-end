@@ -186,6 +186,8 @@ func (handler *SearchCommentHandler) _convertSingleCommentInfo2DTOComment(commen
 		Author:     author,
 		BuildingID: commentInfo.BuildingID,
 		Content:    commentInfo.Content,
+		CreateTime: commentInfo.CreateTime,
+		UpdateTime: commentInfo.UpdateTime,
 	}
 
 	return comment

@@ -43,9 +43,9 @@ func (handler *MySQLDBHandler) CreateStory(req *CreateStoryRequest) error {
 		Author:       info.Author,
 		Title:        info.Title,
 		Content:      info.Content,
-		PicturePaths: convertPicRelativePathsToMySQLSingleString(info.PicturePath),
-		Anonymously:  info.Anonymously,
-		Visibility:   info.Visibility,
+		PicturePaths: convertPicRelativePathsToMySQLSingleString(info.PicturePaths),
+		Anonymously:  int(info.Anonymously),
+		Visibility:   int(info.Visibility),
 		BuildingID:   info.BuildingID,
 	}
 	err := handler.MySQLInst.Debug().Create(&story).Error
@@ -75,13 +75,11 @@ func (handler *MySQLDBHandler) SearchComment(req *SearchCommentRequest) (*Search
 
 	// search by mysql
 	// "zero val" in struct&map condition will not be considered
-	// TODO : 1. consider how to design visible and anonymously to reduce return size  2. get total number
+	// TODO : 1. consider how to design visible and anonymously to reduce return size  2. get total number 3. support time interval filter
 	searchedComments := make([]*Comment, 0)
 	err := handler.MySQLInst.Debug().Where(&Comment{
 		Author:     req.Author,
 		BuildingID: req.BuildingID,
-		CreateTime: req.StartTime,
-		UpdateTime: req.EndTime,
 	}).Offset(offset).Limit(req.PageSize).Find(&searchedComments).Error
 	if err != nil {
 		return nil, fmt.Errorf("search comment fail, err:%w", err)
@@ -90,5 +88,29 @@ func (handler *MySQLDBHandler) SearchComment(req *SearchCommentRequest) (*Search
 	return &SearchCommentResult{
 		Comments: convertDBComments2CommentInfos(searchedComments),
 		Total:    0,
+	}, nil
+}
+
+func (handler *MySQLDBHandler) SearchStory(req *SearchStoryRequest) (*SearchStoryResult, error) {
+	// limit page size to a reasonable value & calculate offset
+	pageSize := req.PageSize
+	if pageSize <= 0 || pageSize > conf.DefaultCommentPageSizeLimit {
+		pageSize = conf.DefaultCommentPageSize
+	}
+	offset := (req.Page - 1) * pageSize
+
+	searchedStories := make([]*Story, 0)
+	err := handler.MySQLInst.Debug().Where(&Story{
+		Author:     req.Author,
+		Title:      req.Title,
+		BuildingID: req.BuildingID,
+	}).Offset(offset).Limit(req.PageSize).Find(&searchedStories).Error
+	if err != nil {
+		return nil, fmt.Errorf("search story fail, err:%w", err)
+	}
+
+	return &SearchStoryResult{
+		Stories: convertDBStories2StoryInfos(searchedStories),
+		Total:   0,
 	}, nil
 }

@@ -16,7 +16,7 @@ func (comment *Comment) TableName() string {
 }
 
 type Story struct {
-	ID           int     `json:"id"              gorm:"column:id; autoIncrement"`
+	ID           int64   `json:"id"              gorm:"column:id; autoIncrement"`
 	Author       string  `json:"author"          gorm:"column:author"`
 	Title        string  `json:"title"           gorm:"column:title"`
 	Content      *string `json:"content"         gorm:"column:content"`
