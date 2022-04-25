@@ -38,7 +38,7 @@ func (handler *CreateStoryHandler) CreateStory(c *gin.Context) {
 		}
 	}
 
-	handler.makeResponse(conf.CreateCommentSuccess, nil)
+	handler.makeResponse(conf.CreateStorySuccess, nil)
 }
 
 func (handler *CreateStoryHandler) bindParams() (conf.StatusCode, error) {

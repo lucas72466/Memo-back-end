@@ -2,10 +2,12 @@ package memory
 
 import (
 	"Memo/conf"
+	MemoryDTO "Memo/dto/memory"
 	"Memo/public"
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
+	"log"
 	"strconv"
 )
 
@@ -59,7 +61,7 @@ func (handler *MySQLDBHandler) CreateStory(req *CreateStoryRequest) error {
 func (handler *MySQLDBHandler) SearchComment(req *SearchCommentRequest) (*SearchCommentResult, error) {
 	// check param
 	if req == nil {
-		return nil, errors.New("search requset can not be empty")
+		return nil, errors.New("search request can not be empty")
 	}
 	if allEmpty := public.CheckIsStringParamsAllEmpty(req.BuildingID, req.Author,
 		strconv.FormatInt(req.StartTime, conf.Decimal), strconv.FormatInt(req.EndTime, conf.Decimal)); allEmpty {
@@ -73,6 +75,8 @@ func (handler *MySQLDBHandler) SearchComment(req *SearchCommentRequest) (*Search
 	}
 	offset := (req.Page - 1) * pageSize
 
+	log.Println(offset, " ", req.Page, "-------------------")
+
 	// search by mysql
 	// "zero val" in struct&map condition will not be considered
 	// TODO : 1. consider how to design visible and anonymously to reduce return size  2. get total number 3. support time interval filter
@@ -80,7 +84,7 @@ func (handler *MySQLDBHandler) SearchComment(req *SearchCommentRequest) (*Search
 	err := handler.MySQLInst.Debug().Where(&Comment{
 		Author:     req.Author,
 		BuildingID: req.BuildingID,
-	}).Offset(offset).Limit(req.PageSize).Find(&searchedComments).Error
+	}).Offset(offset).Limit(pageSize).Find(&searchedComments).Error
 	if err != nil {
 		return nil, fmt.Errorf("search comment fail, err:%w", err)
 	}
@@ -104,7 +108,7 @@ func (handler *MySQLDBHandler) SearchStory(req *SearchStoryRequest) (*SearchStor
 		Author:     req.Author,
 		Title:      req.Title,
 		BuildingID: req.BuildingID,
-	}).Offset(offset).Limit(req.PageSize).Find(&searchedStories).Error
+	}).Offset(offset).Limit(pageSize).Find(&searchedStories).Error
 	if err != nil {
 		return nil, fmt.Errorf("search story fail, err:%w", err)
 	}
@@ -113,4 +117,24 @@ func (handler *MySQLDBHandler) SearchStory(req *SearchStoryRequest) (*SearchStor
 		Stories: convertDBStories2StoryInfos(searchedStories),
 		Total:   0,
 	}, nil
+}
+
+func (handler *MySQLDBHandler) DeleteMemory(req *DeleteMemoryRequest) error {
+	if req == nil {
+		return errors.New("delete info can not be empty")
+	}
+
+	memoryType := req.Type
+	var err error
+	inst := handler.MySQLInst.Debug()
+	switch memoryType {
+	case MemoryDTO.MemoTypeComment:
+		err = inst.Delete(&Comment{ID: req.MemoryID, Author: req.Author}).Error
+	case MemoryDTO.MemoTypeStory:
+		err = inst.Delete(&Story{ID: req.MemoryID, Author: req.Author}).Error
+	default:
+		return fmt.Errorf("unsupport memory type:%v", memoryType)
+	}
+
+	return err
 }

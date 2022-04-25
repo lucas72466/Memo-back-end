@@ -9,6 +9,7 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.InjectLogID())
+	router.Use(middleware.Cors())
 
 	userRouter := router.Group("/user")
 	{
@@ -29,6 +30,12 @@ func InitRouter() *gin.Engine {
 	{
 		controller.SearchCommentRouteRegister(memorySearchRouter)
 		controller.SearchStoryRouteRegister(memorySearchRouter)
+	}
+
+	memoryDeleteRouter := memoryRouter.Group("/delete")
+	memoryDeleteRouter.Use(middleware.JWTAuth())
+	{
+		controller.DeleteMemoryRouteRegister(memoryDeleteRouter)
 	}
 
 	fileRouter := router.Group("/file")

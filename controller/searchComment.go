@@ -47,7 +47,7 @@ func (handler *SearchCommentHandler) SearchComment(c *gin.Context) {
 		}
 	}
 
-	handler.makeResponse(conf.CreateCommentSuccess, nil)
+	handler.makeResponse(conf.Success, nil)
 }
 
 func (handler *SearchCommentHandler) bindParams() (conf.StatusCode, error) {

@@ -13,7 +13,7 @@ func NewStatusCode(code int, msg string) StatusCode {
 }
 
 var (
-	Success            = NewStatusCode(0, "")
+	Success            = NewStatusCode(0, "Success")
 	InvalidParam       = NewStatusCode(1, "input param is invalid")
 	InternalError      = NewStatusCode(2, "internal error")
 	AuthenticationFail = NewStatusCode(3, "")
@@ -25,6 +25,8 @@ var (
 	LoginSuccess      = NewStatusCode(104, "login successfully")
 
 	CreateCommentSuccess = NewStatusCode(200, "comment has been create successfully")
+	CreateStorySuccess   = NewStatusCode(201, "story has been create successfully")
+	DeleteMemorySuccess  = NewStatusCode(202, "memory has been delete successfully")
 
 	PictureInvalid       = NewStatusCode(300, "upload picture is invalid, check format and size")
 	PictureUploadSuccess = NewStatusCode(301, "picture upload successfully")

@@ -5,19 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Anonymously int
-type Visibility int
-
-const (
-	VisibleToAll Visibility = iota
-	VisibleToMySelf
-)
-
-const (
-	AnonymouslyNot Anonymously = iota
-	AnonymouslyYes
-)
-
 // 定义comment input结构体
 type CreateCommentInput struct {
 	Content     string      `json:"content" binding:"required,max=50,min=1" customize_err_msg:"length of content should between 1-50"`

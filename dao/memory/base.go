@@ -7,6 +7,7 @@ type DBHandler interface {
 	CreateComment(req *CreateCommentRequest) error
 	SearchComment(req *SearchCommentRequest) (*SearchCommentResult, error)
 	SearchStory(req *SearchStoryRequest) (*SearchStoryResult, error)
+	DeleteMemory(req *DeleteMemoryRequest) error
 }
 
 type StoryInfo struct {
@@ -68,4 +69,10 @@ type SearchStoryRequest struct {
 type SearchStoryResult struct {
 	Stories []*StoryInfo `json:"stories"`
 	Total   int32        `json:"total"`
+}
+
+type DeleteMemoryRequest struct {
+	MemoryID int64              `json:"memory_id"`
+	Author   string             `json:"author"`
+	Type     memoryDTO.MemoType `json:"type"`
 }
