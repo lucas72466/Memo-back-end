@@ -128,7 +128,7 @@ func (handler *MySQLDBHandler) DeleteMemory(req *DeleteMemoryRequest) error {
 	var err error
 	inst := handler.MySQLInst.Debug()
 	switch memoryType {
-	case MemoryDTO.MemoTypeComment:
+	case MemoryDTO.MemoTypeComment: // TODO: distinguish DTO and DAO types
 		err = inst.Delete(&Comment{ID: req.MemoryID, Author: req.Author}).Error
 	case MemoryDTO.MemoTypeStory:
 		err = inst.Delete(&Story{ID: req.MemoryID, Author: req.Author}).Error
@@ -137,4 +137,42 @@ func (handler *MySQLDBHandler) DeleteMemory(req *DeleteMemoryRequest) error {
 	}
 
 	return err
+}
+
+func (handler *MySQLDBHandler) AddHug(req *AddHugRequest) error {
+	if req == nil || req.MemoryType == "" {
+		return errors.New("add hug req can not be empty")
+	}
+
+	hugRecord := &Hug{
+		UserName:   req.UserName,
+		MemoryType: convertDTOMemoryType2DAOMemoryType(req.MemoryType),
+		MemoryID:   req.MemoryID,
+	}
+
+	err := handler.MySQLInst.Debug().Create(hugRecord).Error
+	if err != nil {
+		return fmt.Errorf("create hug record fail, err:%w", err)
+	}
+
+	return nil
+}
+
+var getHugCountNeededField = []string{"id", "memory_id"}
+
+func (handler *MySQLDBHandler) GetMemoriesRelateHugCount(req *GetMemoriesRelateHugCountRequest) (*GetMemoriesRelateHugCountResult, error) {
+	if req == nil || req.MemoryIDs == nil || len(req.MemoryIDs) == 0 {
+		return nil, errors.New("req can not be empty")
+	}
+
+	hugRecords := make([]*Hug, 0)
+
+	err := handler.MySQLInst.Debug().Select(getHugCountNeededField).
+		Where("memory_id IN ? AND memory_type = ? ", req.MemoryIDs, convertDTOMemoryType2DAOMemoryType(req.MemoryType)).
+		Find(&hugRecords).Error
+	if err != nil {
+		return nil, fmt.Errorf("search hug record fail, err:%w", err)
+	}
+
+	return convertHugRecords2GetMemoriesRelateHugCountResult(hugRecords), nil
 }

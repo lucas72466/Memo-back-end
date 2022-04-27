@@ -6,6 +6,7 @@ import (
 	memoryDTO "Memo/dto/memory"
 	"Memo/public"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -15,10 +16,11 @@ type SearchCommentHandler struct {
 	req      *memoryDTO.SearchCommentInput
 	respData *memoryDTO.SearchCommentOutputData
 
-	username             string
-	login                bool
-	searchedCommentInfos []*memoryDAO.CommentInfo
-	returnComments       []*memoryDTO.Comment
+	username                     string
+	login                        bool
+	searchedCommentInfos         []*memoryDAO.CommentInfo
+	commentInfosRelateHugCounter map[int64]int
+	returnComments               []*memoryDTO.Comment
 }
 
 func NewSearchCommentHandler() *SearchCommentHandler {
@@ -109,6 +111,25 @@ func (handler *SearchCommentHandler) search() (conf.StatusCode, error) {
 	return conf.Success, nil
 }
 
+func (handler *SearchCommentHandler) getStoriesRelateHugCount() (conf.StatusCode, error) {
+	storiesIDs := handler._getAllSearchedCommentsID()
+	daoReq := &memoryDAO.GetMemoriesRelateHugCountRequest{
+		MemoryIDs:  storiesIDs,
+		MemoryType: memoryDTO.MemoTypeStory,
+	}
+
+	res, err := memoryDAO.MDBHandler.GetMemoriesRelateHugCount(daoReq)
+	if err != nil { // if comment info has been loaded successfully, it will be return even load relate hug info fail
+		public.LogWithContext(handler.c, public.ErrorLevel,
+			fmt.Errorf("get comment relate hug count fail, err:%w", err), nil)
+		return conf.Success, nil
+	}
+
+	handler.commentInfosRelateHugCounter = res.MemoriesHugCount
+
+	return conf.Success, nil
+}
+
 func (handler *SearchCommentHandler) filterCommentInfosAndConvert() (conf.StatusCode, error) {
 	res := make([]*memoryDTO.Comment, 0, len(handler.searchedCommentInfos))
 	for _, commentInfo := range handler.searchedCommentInfos {
@@ -141,6 +162,15 @@ func (handler *SearchCommentHandler) makeResponse(statusCode conf.StatusCode, er
 	resp.Data = handler.respData
 
 	public.ResponseSuccess(handler.c, resp)
+}
+
+func (handler *SearchCommentHandler) _getAllSearchedCommentsID() []int64 {
+	res := make([]int64, 0, len(handler.searchedCommentInfos))
+	for _, commentInfo := range handler.searchedCommentInfos {
+		res = append(res, commentInfo.ID)
+	}
+
+	return res
 }
 
 func (handler *SearchCommentHandler) _shouldBeReturn(commentInfo *memoryDAO.CommentInfo) bool {
@@ -181,6 +211,8 @@ func (handler *SearchCommentHandler) _convertSingleCommentInfo2DTOComment(commen
 		author = "***"
 	}
 
+	hugCount := GetHugCount(handler.commentInfosRelateHugCounter, commentInfo.ID)
+
 	comment := &memoryDTO.Comment{
 		CommentID:  commentInfo.ID,
 		Author:     author,
@@ -188,6 +220,8 @@ func (handler *SearchCommentHandler) _convertSingleCommentInfo2DTOComment(commen
 		Content:    commentInfo.Content,
 		CreateTime: commentInfo.CreateTime,
 		UpdateTime: commentInfo.UpdateTime,
+		HugCount:   hugCount,
+		HugStatus:  string(GetHugStatusFromHugCount(hugCount)),
 	}
 
 	return comment

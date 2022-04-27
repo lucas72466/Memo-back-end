@@ -31,3 +31,16 @@ type Story struct {
 func (story *Story) TableName() string {
 	return "story"
 }
+
+type Hug struct {
+	ID         int64  `json:"id" gorm:"column:id; autoIncrement"`
+	UserName   string `json:"user_name" gorm:"column:user_name"`
+	MemoryType int    `json:"memory_type" gorm:"column:memory_type"`
+	MemoryID   int64  `json:"memory_id" gorm:"column:memory_id"`
+	CreateTime int64  `json:"create_time"     gorm:"column:create_time; autoCreateTime:milli"`
+	UpdateTime int64  `json:"update_time"     gorm:"column:update_time; autoUpdateTime:milli"`
+}
+
+func (story *Hug) TableName() string {
+	return "hug"
+}

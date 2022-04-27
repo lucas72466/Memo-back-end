@@ -6,6 +6,7 @@ import (
 	memoryDTO "Memo/dto/memory"
 	"Memo/public"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -15,10 +16,11 @@ type SearchStoryHandler struct {
 	req      *memoryDTO.SearchStoryInput
 	respData *memoryDTO.SearchStoryOutputData
 
-	username           string
-	login              bool
-	searchedStoryInfos []*memoryDAO.StoryInfo
-	retStories         []*memoryDTO.Story
+	username                   string
+	login                      bool
+	searchedStoryInfos         []*memoryDAO.StoryInfo
+	storyInfosRelateHugCounter map[int64]int
+	retStories                 []*memoryDTO.Story
 }
 
 func NewSearchStoryHandler() *SearchStoryHandler {
@@ -38,7 +40,8 @@ func (handler *SearchStoryHandler) SearchStory(c *gin.Context) {
 	handler.c = c
 	for _, handleFunc := range []func() (conf.StatusCode, error){
 		handler.bindParams, handler.checkParams, handler.checkLoginStatus,
-		handler.searchStory, handler.filterStoryInfosAndConvert,
+		handler.searchStory, handler.getStoriesRelateHugCount,
+		handler.filterStoryInfosAndConvert,
 	} {
 		statusCode, err := handleFunc()
 		if err != nil {
@@ -47,7 +50,7 @@ func (handler *SearchStoryHandler) SearchStory(c *gin.Context) {
 		}
 	}
 
-	handler.makeResponse(conf.CreateCommentSuccess, nil)
+	handler.makeResponse(conf.Success, nil)
 }
 
 func (handler *SearchStoryHandler) bindParams() (conf.StatusCode, error) {
@@ -110,6 +113,25 @@ func (handler *SearchStoryHandler) searchStory() (conf.StatusCode, error) {
 	return conf.Success, nil
 }
 
+func (handler *SearchStoryHandler) getStoriesRelateHugCount() (conf.StatusCode, error) {
+	storiesIDs := handler._getAllSearchedStoriesID()
+	daoReq := &memoryDAO.GetMemoriesRelateHugCountRequest{
+		MemoryIDs:  storiesIDs,
+		MemoryType: memoryDTO.MemoTypeStory,
+	}
+
+	res, err := memoryDAO.MDBHandler.GetMemoriesRelateHugCount(daoReq)
+	if err != nil { // if stories info has been loaded successfully, it will be return even load relate hug info fail
+		public.LogWithContext(handler.c, public.ErrorLevel,
+			fmt.Errorf("get stories relate hug count fail, err:%w", err), nil)
+		return conf.Success, nil
+	}
+
+	handler.storyInfosRelateHugCounter = res.MemoriesHugCount
+
+	return conf.Success, nil
+}
+
 func (handler *SearchStoryHandler) filterStoryInfosAndConvert() (conf.StatusCode, error) {
 	res := make([]*memoryDTO.Story, 0, len(handler.searchedStoryInfos))
 	for _, storyInfo := range handler.searchedStoryInfos {
@@ -142,6 +164,15 @@ func (handler *SearchStoryHandler) makeResponse(statusCode conf.StatusCode, err 
 	resp.Data = handler.respData
 
 	public.ResponseSuccess(handler.c, resp)
+}
+
+func (handler *SearchStoryHandler) _getAllSearchedStoriesID() []int64 {
+	res := make([]int64, 0, len(handler.searchedStoryInfos))
+	for _, storyInfo := range handler.searchedStoryInfos {
+		res = append(res, storyInfo.ID)
+	}
+
+	return res
 }
 
 func (handler *SearchStoryHandler) _shouldBeReturn(storyInfo *memoryDAO.StoryInfo) bool {
@@ -177,6 +208,8 @@ func (handler *SearchStoryHandler) _convertSingleStoryInfo2DTOStory(storyInfo *m
 		author = "***"
 	}
 
+	hugCount := GetHugCount(handler.storyInfosRelateHugCounter, storyInfo.ID)
+
 	story := &memoryDTO.Story{
 		ID:           storyInfo.ID,
 		Author:       author,
@@ -186,7 +219,37 @@ func (handler *SearchStoryHandler) _convertSingleStoryInfo2DTOStory(storyInfo *m
 		PictureLinks: storyInfo.PicturePaths,
 		CreateTime:   storyInfo.CreateTime,
 		UpdateTime:   storyInfo.UpdateTime,
+		HugCount:     hugCount,
+		HugStatus:    string(GetHugStatusFromHugCount(hugCount)),
 	}
 
 	return story
+}
+
+// TODO Reorganising the structure of the controllers
+
+func GetHugCount(counter map[int64]int, memoryID int64) int {
+	if counter == nil {
+		return 0
+	}
+
+	return counter[memoryID]
+}
+
+type HugStatus string
+
+const (
+	HugStatusLevel0 = "Love is on its way!"
+	HugStatusLevel1 = "Someone has hugged you!"
+	HugStatusLevel2 = "You're surrounded by hugs!"
+)
+
+func GetHugStatusFromHugCount(count int) HugStatus {
+	if count == 0 {
+		return HugStatusLevel0
+	} else if count <= 3 {
+		return HugStatusLevel1
+	} else {
+		return HugStatusLevel2
+	}
 }

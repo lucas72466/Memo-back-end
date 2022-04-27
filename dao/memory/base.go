@@ -8,6 +8,8 @@ type DBHandler interface {
 	SearchComment(req *SearchCommentRequest) (*SearchCommentResult, error)
 	SearchStory(req *SearchStoryRequest) (*SearchStoryResult, error)
 	DeleteMemory(req *DeleteMemoryRequest) error
+	AddHug(req *AddHugRequest) error
+	GetMemoriesRelateHugCount(req *GetMemoriesRelateHugCountRequest) (*GetMemoriesRelateHugCountResult, error)
 }
 
 type StoryInfo struct {
@@ -75,4 +77,24 @@ type DeleteMemoryRequest struct {
 	MemoryID int64              `json:"memory_id"`
 	Author   string             `json:"author"`
 	Type     memoryDTO.MemoType `json:"type"`
+}
+
+type AddHugRequest struct {
+	UserName   string             `json:"user_name"`
+	MemoryID   int64              `json:"memory_id"`
+	MemoryType memoryDTO.MemoType `json:"memory_type"`
+}
+
+var (
+	TypeStory   int = 1
+	TypeComment int = 2
+)
+
+type GetMemoriesRelateHugCountRequest struct {
+	MemoryIDs  []int64            `json:"memory_ids"`
+	MemoryType memoryDTO.MemoType `json:"memory_type"`
+}
+
+type GetMemoriesRelateHugCountResult struct {
+	MemoriesHugCount map[int64]int `json:"memories_hug_count"`
 }

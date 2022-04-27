@@ -21,7 +21,7 @@ func convertPicRelativePathsToMySQLSingleString(paths []string) string {
 
 func convertPicRelativePathsFromMySQLSingleString(pathsString string) []string {
 	res := strings.Split(pathsString, DefaultPathSplitSymbol)
-	res = res[:len(res) - 1]
+	res = res[:len(res)-1]
 	return res
 }
 
@@ -73,4 +73,29 @@ func convertSingleStory2StoryInfo(story *Story) *StoryInfo {
 	}
 
 	return storyInfo
+}
+
+func convertDTOMemoryType2DAOMemoryType(dtoType memoryDTO.MemoType) int {
+	switch dtoType {
+	case memoryDTO.MemoTypeComment:
+		return TypeComment
+	case memoryDTO.MemoTypeStory:
+		return TypeStory
+	}
+
+	return 0
+}
+
+func convertHugRecords2GetMemoriesRelateHugCountResult(hugRecords []*Hug) *GetMemoriesRelateHugCountResult {
+	counter := make(map[int64]int)
+
+	for _, hugRecord := range hugRecords {
+		counter[hugRecord.MemoryID] += 1
+	}
+
+	res := &GetMemoriesRelateHugCountResult{
+		MemoriesHugCount: counter,
+	}
+
+	return res
 }

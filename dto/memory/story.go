@@ -51,6 +51,8 @@ type Story struct {
 	PictureLinks []string `json:"picture_links"`
 	CreateTime   int64    `json:"create_time"`
 	UpdateTime   int64    `json:"update_time"`
+	HugCount     int      `json:"hug_count"`
+	HugStatus    string   `json:"hug_status"`
 }
 
 type SearchStoryOutputData struct {

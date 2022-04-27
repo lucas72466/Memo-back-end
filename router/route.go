@@ -38,6 +38,11 @@ func InitRouter() *gin.Engine {
 		controller.DeleteMemoryRouteRegister(memoryDeleteRouter)
 	}
 
+	memoryHugRouter := memoryRouter.Group("/hug")
+	{
+		controller.HugAddRouteRegister(memoryHugRouter)
+	}
+
 	fileRouter := router.Group("/file")
 	{
 		controller.PictureUploadRouteRegister(fileRouter)
