@@ -5,7 +5,10 @@ import (
 	memoryDAO "Memo/dao/memory"
 	MemoryDTO "Memo/dto/memory"
 	"Memo/public"
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	cmap "github.com/orcaman/concurrent-map"
 )
 
 type HugAddHandler struct {
@@ -61,6 +64,10 @@ func (handler *HugAddHandler) tryGetUserInfo() (conf.StatusCode, error) {
 }
 
 func (handler *HugAddHandler) addHug() (conf.StatusCode, error) {
+	if handler.username == "lovely stranger" && checkHasHugged(handler.c, handler.req) {
+		return conf.HasHugged, fmt.Errorf("hugged")
+	}
+
 	daoReq := &memoryDAO.AddHugRequest{
 		UserName:   handler.username,
 		MemoryID:   handler.req.MemoryID,
@@ -70,6 +77,9 @@ func (handler *HugAddHandler) addHug() (conf.StatusCode, error) {
 	err := memoryDAO.MDBHandler.AddHug(daoReq)
 	if err != nil {
 		public.LogWithContext(handler.c, public.ErrorLevel, err, nil)
+		if errors.Is(err, memoryDAO.HuggedErr) {
+			return conf.HasHugged, err
+		}
 		return conf.InternalError, err
 	}
 
@@ -88,4 +98,21 @@ func (handler *HugAddHandler) makeResponse(statusCode conf.StatusCode, err error
 	}
 
 	public.ResponseSuccess(handler.c, resp)
+}
+
+var unLoginUserHugRecordMap = cmap.New()
+
+func checkHasHugged(c *gin.Context, req *MemoryDTO.HugAddInput) bool {
+	ip := c.ClientIP()
+	agent := c.Request.UserAgent()
+
+	key := fmt.Sprintf("%s-%s:%s-%d", ip, agent, req.MemoryType, req.MemoryID)
+
+	if unLoginUserHugRecordMap.Has(key) {
+		return true
+	}
+
+	unLoginUserHugRecordMap.Set(key, true)
+
+	return false
 }

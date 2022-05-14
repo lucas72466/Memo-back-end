@@ -28,6 +28,7 @@ var (
 	CreateStorySuccess   = NewStatusCode(201, "story has been create successfully")
 	DeleteMemorySuccess  = NewStatusCode(202, "memory has been delete successfully")
 	AddHugSuccess        = NewStatusCode(203, "you hug the author!")
+	HasHugged            = NewStatusCode(204, "you have hugged the author!")
 
 	PictureInvalid       = NewStatusCode(300, "upload picture is invalid, check format and size")
 	PictureUploadSuccess = NewStatusCode(301, "picture upload successfully")

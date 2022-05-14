@@ -33,7 +33,9 @@ func NewSearchStoryHandler() *SearchStoryHandler {
 }
 
 func SearchStoryRouteRegister(group *gin.RouterGroup) {
-	group.POST("/story", NewSearchStoryHandler().SearchStory)
+	group.POST("/story", func(context *gin.Context) {
+		NewSearchStoryHandler().SearchStory(context)
+	})
 }
 
 func (handler *SearchStoryHandler) SearchStory(c *gin.Context) {

@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
-	"log"
+	"gorm.io/gorm/clause"
 	"strconv"
 )
 
@@ -75,8 +75,6 @@ func (handler *MySQLDBHandler) SearchComment(req *SearchCommentRequest) (*Search
 	}
 	offset := (req.Page - 1) * pageSize
 
-	log.Println(offset, " ", req.Page, "-------------------")
-
 	// search by mysql
 	// "zero val" in struct&map condition will not be considered
 	// TODO : 1. consider how to design visible and anonymously to reduce return size  2. get total number 3. support time interval filter
@@ -139,6 +137,8 @@ func (handler *MySQLDBHandler) DeleteMemory(req *DeleteMemoryRequest) error {
 	return err
 }
 
+var HuggedErr = errors.New("you have hugged the author")
+
 func (handler *MySQLDBHandler) AddHug(req *AddHugRequest) error {
 	if req == nil || req.MemoryType == "" {
 		return errors.New("add hug req can not be empty")
@@ -150,7 +150,11 @@ func (handler *MySQLDBHandler) AddHug(req *AddHugRequest) error {
 		MemoryID:   req.MemoryID,
 	}
 
-	err := handler.MySQLInst.Debug().Create(hugRecord).Error
+	if hugRecord.UserName != "lovely stranger" && handler.MySQLInst.Debug().Where(hugRecord).Find(&Hug{}).RowsAffected != 0{
+		return HuggedErr
+	}
+
+	err := handler.MySQLInst.Debug().Clauses(clause.OnConflict{DoNothing: true}).Create(hugRecord).Error
 	if err != nil {
 		return fmt.Errorf("create hug record fail, err:%w", err)
 	}
